@@ -22,13 +22,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd Lux-Box-1 && npm run dev"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
@@ -36,5 +36,5 @@ externalPort = 80
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "cd Lux-Box-1 && npm run start"]
-build = ["bash", "-c", "cd Lux-Box-1 && npm run build"]
+run = ["npm", "run", "start"]
+build = ["npm", "run", "build"]

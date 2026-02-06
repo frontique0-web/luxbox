@@ -1,0 +1,136 @@
+{
+  "project_meta": {
+    "project_name": "Lux Box - High-End E-Commerce Experience",
+    "brand_identity": "Ultra-Luxury, Minimalist, Architectural, Immersive",
+    "design_philosophy": "Digital Twin of Physical Store - Transforming interior design elements (Arches, Vertical Slats, Linear Lighting) into UI Components.",
+    "estimated_value_feel": "$20,000 Custom Development",
+    "target_audience": "Sophisticated shoppers looking for premium perfumes, accessories, and gifts."
+  },
+  "design_system": {
+    "color_palette": {
+      "primary_dark": "#0B281F",
+      "primary_green_deep": "#143D30",
+      "accent_gold": "#D4AF37",
+      "accent_gold_hover": "#F2C94C",
+      "background_white": "#FFFFFF",
+      "surface_off_white": "#F9F9F9",
+      "text_main": "#1A1A1A",
+      "text_secondary": "#555555"
+    },
+    "typography": {
+      "font_family_arabic": "'Tajawal' or 'Almarai', weights: 300, 500, 700 (Clean, Modern Sans-serif)",
+      "font_family_english": "'Montserrat' or 'Playfair Display', weights: 400, 600 (Elegant, High-Contrast)",
+      "hierarchy": "Huge Headlines, generous line-height, minimalistic labels."
+    },
+    "visual_motifs": {
+      "arches": "Use the arch shape (border-radius: 200px 200px 0 0) for product cards and section dividers, mimicking the store's shelving units.",
+      "slats": "Vertical lines pattern (CSS repeating-linear-gradient) using the dark green shades to mimic the ceiling texture.",
+      "glassmorphism": "Subtle blur effects (backdrop-filter: blur(10px)) on navigation bars and floating elements.",
+      "lighting": "CSS box-shadows that mimic cool white LED strips (0px 10px 30px rgba(255, 255, 255, 0.4)) aimed at gold elements."
+    }
+  },
+  "ui_ux_requirements": {
+    "animations": "GSAP (GreenSock) or Framer Motion. Smooth parallax scrolling (Lenis Scroll). Elements should fade in upwards with a staggered delay. Hover effects should be magnetic and slow.",
+    "responsiveness": "Mobile-first approach, but desktop must look cinematic (wide layouts).",
+    "interactions": "Micro-interactions on every button click (ripple effect). Product cards should slightly lift and zoom on hover."
+  },
+  "page_structure_and_content": {
+    "header_navigation": {
+      "style": "Sticky, transparent becoming solid dark green on scroll. Logo 'LUX BOX' centered. Minimal icons for Cart, Search, and Profile in Gold.",
+      "menu_items": ["الرئيسية", "العطور", "المكياج", "الإكسسوارات", "الساعات", "من نحن"]
+    },
+    "section_1_hero": {
+      "type": "Cinematic Hero",
+      "layout": "Full-screen width (100vh). Background is a high-quality video or parallax image of the physical store interior, focusing on the depth of the green ceiling slats.",
+      "overlay": "Dark gradient overlay (bottom to top) to ensure text readability.",
+      "content": {
+        "headline": "LUX BOX",
+        "sub_headline": "جمعنا لك كل شيء .. في مكان واحد",
+        "cta_button": {
+          "text": "تصفح المجموعات الحصرية",
+          "style": "Transparent button with Gold border, filling with Gold upon hover."
+        }
+      },
+      "animation_instruction": "The camera should feel like it's slowly zooming into the store."
+    },
+    "section_2_about_us": {
+      "title": "من نحن | About Us",
+      "layout": "Split screen. Left side: Text. Right side: An artistic crop of the store's green wall texture.",
+      "content_text": "نحن متجر متخصص بتقديم أحدث منتجات الفيب والإكسسوارات، مع تشكيلة مختارة بعناية من الساعات، العطور، الإكسسوارات، المكياج، ومنتجات العناية بالبشرة، بالإضافة إلى بوكسات الهدايا الفخمة. نحرص على تقديم منتجات أصلية بجودة عالية، وأسعار منافسة، مع خدمة راقية وتجربة تسوق مميزة تناسب جميع الأذواق.",
+      "design_detail": "The text container should have a subtle gold vertical line on the right side."
+    },
+    "section_3_categories_main": {
+      "title": "أقسامنا | Our Collections",
+      "layout": "Horizontal Scroll or Grid. Each category is represented by an 'Arch' shape card (mimicking the store shelves).",
+      "style": "Dark Green cards with white icons/text. On hover, the card expands and reveals a background image of the product.",
+      "categories_list": [
+        "عطورات (Perfumes)",
+        "مكياج وعناية (Makeup & Care)",
+        "إكسسوارات (Accessories)",
+        "ساعات (Watches)",
+        "شناتي (Bags)",
+        "كفرات موبايل (Mobile Covers)"
+      ]
+    },
+    "section_4_products_detailed_showcase": {
+      "title": "تسوق حسب الفئة | Shop by Category",
+      "concept": "A sophisticated tab system where clicking a category filters the products below instantly with a fade transition.",
+      "tabs_logic": {
+        "Perfumes": ["عطورات فرنسية أصلي", "عطورات إماراتية", "عطورات كوبي وان"],
+        "Makeup_SkinCare": ["مكياج", "عناية بالبشرة"],
+        "Watches": ["كوبي ماستر", "كوبي وان", "أوريجنال"],
+        "Accessories": ["أطقم كاملة", "طوق", "حلق", "إسورة", "خاتم"],
+        "Bags": ["شناتي نسائية"],
+        "Mobile": ["كفرات موبايل"]
+      },
+      "product_card_design": {
+        "background": "White card with very subtle shadow.",
+        "image": "High-res product image on a light grey pedestal.",
+        "details": "Product Name in Bold Dark Green. Price in Gold. 'Add to Cart' button appears only on hover.",
+        "badges": "Small tags for 'Original', 'Copy Master' in elegant geometric shapes."
+      }
+    },
+    "section_5_features": {
+      "title": "لماذا لوكس بوكس؟",
+      "layout": "3-Column Grid using icons drawn in thin Gold lines.",
+      "features_content": [
+        {
+          "icon": "Shield-Check",
+          "title": "جودة مضمونة",
+          "desc": "منتجات أصلية وكوبي ماستر مختارة بعناية"
+        },
+        {
+          "icon": "Gift",
+          "title": "تغليف فاخر",
+          "desc": "بوكسات هدايا تناسب أرقى المناسبات"
+        },
+        {
+          "icon": "Truck-Fast",
+          "title": "شحن سريع",
+          "desc": "توصيل لباب بيتك بأسرع وقت"
+        }
+      ]
+    },
+    "section_6_location_social": {
+      "layout": "Dark Green Background full width.",
+      "content": {
+        "map": "Styled Google Map (Dark Mode to match the theme).",
+        "social_links": "Large, clickable icons for Instagram, TikTok, Snapchat.",
+        "text": "زورونا في معرضنا للاستمتاع بالتجربة الكاملة."
+      }
+    },
+    "footer": {
+      "style": "Minimalist. Dark Green #0B281F.",
+      "elements": [
+        "Logo White",
+        "Quick Links (Privacy Policy, Returns)",
+        "Copyright © 2024 Lux Box. All Rights Reserved."
+      ]
+    }
+  },
+  "technical_implementation_notes": {
+    "css_framework": "Tailwind CSS configured with custom colors.",
+    "js_framework": "React.js or Next.js for speed and SEO.",
+    "effects": "Use 'IntersectionObserver' to trigger animations when elements enter the viewport. Implement a 'Custom Cursor' that looks like a small golden ring that expands when hovering over clickable links."
+  }
+}
