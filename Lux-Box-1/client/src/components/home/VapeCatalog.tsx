@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -74,6 +74,15 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
     enabled: viewState === "products" && !!activeSubId,
   });
 
+  const [skipBrands, setSkipBrands] = useState(false);
+
+  useEffect(() => {
+    if (viewState === "brands" && !brandsLoading && brands.length === 0 && activeSubId) {
+      setSkipBrands(true);
+      setViewState("products");
+    }
+  }, [viewState, brandsLoading, brands.length, activeSubId]);
+
   const handleSubClick = (sub: Subcategory) => {
     setActiveSubId(sub.id);
     setActiveBrandId(null);
@@ -81,8 +90,6 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
     setViewState("brands");
     setSkipBrands(false);
   };
-
-  const [skipBrands, setSkipBrands] = useState(false);
 
   const handleBrandClick = (brand: Brand) => {
     setActiveBrandId(brand.id);
@@ -117,9 +124,10 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
     if (index === 0) {
       setActiveSubId(null);
       setActiveBrandId(null);
+      setSkipBrands(false);
       setBreadcrumb(["الأراكيل والفيب"]);
       setViewState("subcategories");
-    } else if (index === 1) {
+    } else if (index === 1 && !skipBrands) {
       setActiveBrandId(null);
       setBreadcrumb((prev) => prev.slice(0, 2));
       setViewState("brands");
@@ -285,13 +293,9 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
                 ))}
               </div>
             ) : (
-              <NoBrandsProductView
-                categoryId={categoryId}
-                activeSubId={activeSubId}
-                setViewState={setViewState}
-                setSkipBrands={setSkipBrands}
-                addToCart={addToCart}
-              />
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
+              </div>
             )}
           </motion.div>
         )}
@@ -304,23 +308,36 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
             exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.3 }}
           >
-            <h3 className="font-arabic font-bold text-2xl text-[#0B281F] text-center mb-2">
-              {brands.find((b) => b.id === activeBrandId)?.nameAr}
-            </h3>
-            {brands.find((b) => b.id === activeBrandId)?.puffs && (
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Zap className="w-4 h-4 text-[#D4AF37]" />
-                <span className="font-arabic text-sm text-gray-500">
-                  {parseInt(
-                    brands.find((b) => b.id === activeBrandId)?.puffs || "0"
-                  ).toLocaleString()}{" "}
-                  سحبة
-                </span>
-              </div>
+            {skipBrands ? (
+              <>
+                <h3 className="font-arabic font-bold text-2xl text-[#0B281F] text-center mb-2">
+                  {subcategories.find((s) => s.id === activeSubId)?.nameAr}
+                </h3>
+                <p className="font-serif text-[#D4AF37] text-center mb-10 tracking-widest text-sm">
+                  اختر المنتج
+                </p>
+              </>
+            ) : (
+              <>
+                <h3 className="font-arabic font-bold text-2xl text-[#0B281F] text-center mb-2">
+                  {brands.find((b) => b.id === activeBrandId)?.nameAr}
+                </h3>
+                {brands.find((b) => b.id === activeBrandId)?.puffs && (
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Zap className="w-4 h-4 text-[#D4AF37]" />
+                    <span className="font-arabic text-sm text-gray-500">
+                      {parseInt(
+                        brands.find((b) => b.id === activeBrandId)?.puffs || "0"
+                      ).toLocaleString()}{" "}
+                      سحبة
+                    </span>
+                  </div>
+                )}
+                <p className="font-serif text-[#D4AF37] text-center mb-10 tracking-widest text-sm">
+                  اختر المنتج
+                </p>
+              </>
             )}
-            <p className="font-serif text-[#D4AF37] text-center mb-10 tracking-widest text-sm">
-              اختر المنتج
-            </p>
 
             <ProductsGrid
               products={products}
@@ -331,39 +348,6 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function NoBrandsProductView({
-  categoryId,
-  activeSubId,
-  setViewState,
-  setSkipBrands,
-  addToCart,
-}: {
-  categoryId: number;
-  activeSubId: number | null;
-  setViewState: (state: ViewState) => void;
-  setSkipBrands: (val: boolean) => void;
-  addToCart: (product: Product) => void;
-}) {
-  const { data: directProducts = [], isLoading } = useQuery({
-    queryKey: ["products", categoryId, activeSubId, null],
-    queryFn: () => fetchProducts(categoryId, activeSubId ?? undefined, undefined),
-    enabled: !!activeSubId,
-  });
-
-  useEffect(() => {
-    setSkipBrands(true);
-    setViewState("products");
-  }, []);
-
-  return (
-    <ProductsGrid
-      products={directProducts}
-      loading={isLoading}
-      addToCart={addToCart}
-    />
   );
 }
 
