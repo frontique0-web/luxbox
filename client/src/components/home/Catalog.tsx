@@ -33,7 +33,10 @@ export default function Catalog() {
   const scrollToProducts = useCallback(() => {
     if (window.innerWidth < 768 && productsRef.current) {
       setTimeout(() => {
-        productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const el = productsRef.current;
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY - 220;
+        window.scrollTo({ top, behavior: 'smooth' });
       }, 200);
     }
   }, []);
