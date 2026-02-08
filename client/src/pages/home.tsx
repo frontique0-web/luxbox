@@ -11,8 +11,8 @@ export default function Home() {
     <main className="w-full bg-white text-[#1A1A1A] selection:bg-[#D4AF37] selection:text-white">
       <Navbar />
       <Hero />
-      <About />
       <Catalog />
+      <About />
       <Features />
       <Contact />
       <Footer />
