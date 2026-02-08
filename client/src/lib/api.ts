@@ -24,6 +24,14 @@ export async function fetchBrands(subcategoryId: number): Promise<Brand[]> {
   return response.json();
 }
 
+export async function searchProducts(query: string): Promise<Product[]> {
+  const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+  if (!response.ok) {
+    throw new Error("Failed to search products");
+  }
+  return response.json();
+}
+
 export async function fetchProducts(categoryId?: number, subcategoryId?: number, brandId?: number): Promise<Product[]> {
   const params = new URLSearchParams();
   if (categoryId) params.append("categoryId", categoryId.toString());

@@ -16,7 +16,7 @@ import {
   products
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, or, ilike } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -42,6 +42,7 @@ export interface IStorage {
   getProductsByCategoryId(categoryId: number): Promise<Product[]>;
   getProductsBySubcategoryId(subcategoryId: number): Promise<Product[]>;
   getProductsByBrandId(brandId: number): Promise<Product[]>;
+  searchProducts(query: string): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
 }
 
@@ -131,6 +132,19 @@ export class DatabaseStorage implements IStorage {
       .where(and(
         eq(products.brandId, brandId),
         eq(products.isActive, true)
+      ))
+      .orderBy(products.displayOrder);
+  }
+
+  async searchProducts(query: string): Promise<Product[]> {
+    const searchTerm = `%${query}%`;
+    return await db.select().from(products)
+      .where(and(
+        eq(products.isActive, true),
+        or(
+          ilike(products.name, searchTerm),
+          ilike(products.description, searchTerm)
+        )
       ))
       .orderBy(products.displayOrder);
   }

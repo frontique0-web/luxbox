@@ -42,6 +42,22 @@ export async function registerRoutes(
     }
   });
 
+  // Search products
+  app.get("/api/products/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.trim().length === 0) {
+        res.json([]);
+        return;
+      }
+      const results = await storage.searchProducts(query.trim());
+      res.json(results);
+    } catch (error) {
+      console.error("Error searching products:", error);
+      res.status(500).json({ error: "Failed to search products" });
+    }
+  });
+
   // Get all products
   app.get("/api/products", async (req, res) => {
     try {
