@@ -3,14 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { 
-  SprayCan,
-  Palette,
-  Watch, 
-  Gem,
   ShoppingBag,
-  Smartphone,
   Loader2,
-  Cigarette,
   ChevronLeft
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,16 +12,6 @@ import { fetchCategories, fetchSubcategories, fetchBrands, fetchProducts } from 
 import type { Category, Subcategory, Brand, Product } from "@shared/schema";
 import { useCart } from "@/context/CartContext";
 import VapeCatalog from "./VapeCatalog";
-
-const ICON_MAP: Record<string, any> = {
-  SprayCan,
-  Palette,
-  Watch,
-  Gem,
-  ShoppingBag,
-  Smartphone,
-  Cigarette
-};
 
 const CATEGORY_IMAGES: Record<string, string> = {
   perfumes: "/assets/categories/perfumes.jpg",
@@ -121,18 +105,19 @@ export default function Catalog() {
           <p className="font-serif text-[#D4AF37] text-xl tracking-widest">Our Collections</p>
         </div>
 
-        <div className="flex md:flex-wrap md:justify-center gap-4 md:gap-6 mb-12 overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide px-2 md:px-0" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="flex md:flex-wrap md:justify-center gap-5 md:gap-6 mb-12 overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide px-4 md:px-0" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
           {categories.map((cat) => {
-            const IconComponent = ICON_MAP[cat.icon] || ShoppingBag;
             const bgImage = CATEGORY_IMAGES[cat.slug] || "";
+            const isActive = activeCategoryId === cat.id;
             return (
               <motion.button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
                 className={cn(
-                  "group relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[140px] h-[180px] md:w-[160px] md:h-[200px] transition-all duration-300 rounded-2xl overflow-hidden shadow-lg",
-                  activeCategoryId === cat.id 
-                    ? "ring-2 ring-[#D4AF37] shadow-[0_10px_25px_rgba(11,40,31,0.4)] z-10 scale-105" 
+                  "group relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[130px] h-[170px] md:w-[155px] md:h-[200px] transition-all duration-300 overflow-hidden shadow-lg",
+                  "rounded-t-full rounded-b-lg",
+                  isActive
+                    ? "ring-2 ring-[#D4AF37] shadow-[0_10px_25px_rgba(212,175,55,0.3)] z-10 scale-105" 
                     : "hover:shadow-xl hover:-translate-y-1"
                 )}
                 whileTap={{ scale: 0.95 }}
@@ -146,32 +131,30 @@ export default function Catalog() {
                 )}
                 
                 <div className={cn(
-                  "absolute inset-0 transition-opacity duration-300",
-                  activeCategoryId === cat.id 
-                    ? "bg-[#0B281F]/75" 
-                    : "bg-[#0B281F]/60 group-hover:bg-[#0B281F]/70"
+                  "absolute inset-0 transition-all duration-300",
+                  isActive
+                    ? "bg-[#143D30]/65" 
+                    : "bg-[#1a4a3a]/50 group-hover:bg-[#143D30]/60"
                 )} />
 
                 <div className="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-                  <div className={cn(
-                    "mb-3 transition-all duration-300",
-                    activeCategoryId === cat.id ? "text-[#D4AF37] scale-110" : "text-[#D4AF37]/80"
-                  )}>
-                    <IconComponent className="w-9 h-9 md:w-11 md:h-11" strokeWidth={1.5} />
-                  </div>
                   <span className={cn(
-                    "font-arabic font-bold text-base md:text-lg text-center transition-colors leading-tight",
-                    activeCategoryId === cat.id ? "text-white" : "text-white/90"
+                    "font-arabic font-bold text-lg md:text-xl text-center transition-all leading-tight drop-shadow-lg",
+                    isActive ? "text-[#D4AF37]" : "text-white"
                   )}>
                     {cat.nameAr}
                   </span>
-                  {activeCategoryId === cat.id && (
+                  {isActive && (
                     <motion.div 
                       layoutId="categoryIndicator"
-                      className="w-8 h-[2px] bg-[#D4AF37] mt-2 rounded-full"
+                      className="w-10 h-[2px] bg-[#D4AF37] mt-3 rounded-full"
                     />
                   )}
                 </div>
+
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F]" />
+                )}
               </motion.button>
             );
           })}
