@@ -431,8 +431,8 @@ function ProductsGrid({
               </div>
             </div>
 
-            <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0">
-              <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50" />
+            <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0 overflow-hidden">
+              <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50 rounded-md" />
             </div>
           </motion.div>
         ))}

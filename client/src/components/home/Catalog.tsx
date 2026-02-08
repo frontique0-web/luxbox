@@ -214,7 +214,7 @@ export default function Catalog() {
                 </div>
 
                 {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F]" />
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F] rounded-b-lg" />
                 )}
               </motion.button>
             );
@@ -225,7 +225,7 @@ export default function Catalog() {
       </div>
 
         {isSearching ? (
-          <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[40px] md:rounded-t-[80px] border-t-4 border-[#D4AF37] shadow-2xl mt-8">
+          <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[40px] md:rounded-t-[80px] border-t-4 border-[#D4AF37] shadow-2xl mt-8 overflow-hidden">
             <div className="container mx-auto px-6">
               <div className="text-center mb-8">
                 <p className="font-arabic text-lg text-gray-500">
@@ -287,7 +287,7 @@ export default function Catalog() {
                         </div>
                         
                         <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0">
-                          <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50" />
+                          <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50 rounded-md" />
                         </div>
                       </motion.div>
                     ))}
@@ -297,8 +297,8 @@ export default function Catalog() {
             </div>
           </div>
         ) : (
-      <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[80px] md:rounded-t-[150px] border-t-8 border-[#0B281F] shadow-2xl">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-4 bg-[#D4AF37]/20 rounded-b-full blur-sm" />
+      <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[80px] md:rounded-t-[150px] border-t-8 border-[#0B281F] shadow-2xl overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-4 bg-[#D4AF37]/20 blur-sm rounded-t-[80px] md:rounded-t-[150px]" />
 
         <div className="container mx-auto px-6">
           {isVapeCategory && activeCategoryId ? (
@@ -436,7 +436,7 @@ export default function Catalog() {
                           </div>
                           
                           <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0">
-                            <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50" />
+                            <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50 rounded-md" />
                           </div>
                         </motion.div>
                       ))}
