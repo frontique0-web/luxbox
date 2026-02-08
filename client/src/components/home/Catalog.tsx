@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,15 @@ export default function Catalog() {
   const [activeSubCategoryId, setActiveSubCategoryId] = useState<number | null>(null);
   const [activeBrandId, setActiveBrandId] = useState<number | null>(null);
   const { addToCart } = useCart();
+  const productsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToProducts = useCallback(() => {
+    if (window.innerWidth < 768 && productsRef.current) {
+      setTimeout(() => {
+        productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    }
+  }, []);
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ["categories"],
@@ -76,6 +85,7 @@ export default function Catalog() {
     setActiveCategoryId(categoryId);
     setActiveSubCategoryId(null);
     setActiveBrandId(null);
+    scrollToProducts();
   };
 
   const handleSubcategoryChange = (subcategoryId: number) => {
@@ -105,7 +115,7 @@ export default function Catalog() {
           <p className="font-serif text-[#D4AF37] text-xl tracking-widest">Our Collections</p>
         </div>
 
-        <div className="flex md:flex-wrap md:justify-center gap-5 md:gap-6 mb-12 overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide px-4 md:px-0" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
+        <div className="flex md:flex-wrap md:justify-center gap-5 md:gap-6 mb-12 overflow-x-auto md:overflow-x-visible pt-3 pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide px-4 md:px-0" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
           {categories.map((cat) => {
             const bgImage = CATEGORY_IMAGES[cat.slug] || "";
             const isActive = activeCategoryId === cat.id;
@@ -161,7 +171,7 @@ export default function Catalog() {
         </div>
       </div>
 
-      <div className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[80px] md:rounded-t-[150px] border-t-8 border-[#0B281F] shadow-2xl">
+      <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[80px] md:rounded-t-[150px] border-t-8 border-[#0B281F] shadow-2xl">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-4 bg-[#D4AF37]/20 rounded-b-full blur-sm" />
 
         <div className="container mx-auto px-6">
