@@ -14,13 +14,13 @@ import { useCart } from "@/context/CartContext";
 import VapeCatalog from "./VapeCatalog";
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  perfumes: "/assets/categories/perfumes.jpg",
-  makeup: "/assets/categories/makeup.jpg",
-  watches: "/assets/categories/watches.jpg",
-  accessories: "/assets/categories/accessories.jpg",
-  bags: "/assets/categories/bags.jpg",
-  "mobile-covers": "/assets/categories/mobile-covers.jpg",
-  vape: "/assets/categories/vape.jpg",
+  perfumes: "/assets/categories/perfumes.png",
+  makeup: "/assets/categories/makeup.png",
+  watches: "/assets/categories/watches.png",
+  accessories: "/assets/categories/accessories.png",
+  bags: "/assets/categories/bags.png",
+  "mobile-covers": "/assets/categories/mobile-covers.png",
+  vape: "/assets/categories/vape.png",
 };
 
 export default function Catalog() {
