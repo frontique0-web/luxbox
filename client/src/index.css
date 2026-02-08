@@ -110,4 +110,12 @@
   .text-gold {
     color: hsl(46 65% 52%);
   }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

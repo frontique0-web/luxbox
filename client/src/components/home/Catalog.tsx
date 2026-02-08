@@ -29,6 +29,16 @@ const ICON_MAP: Record<string, any> = {
   Cigarette
 };
 
+const CATEGORY_IMAGES: Record<string, string> = {
+  perfumes: "/assets/categories/perfumes.jpg",
+  makeup: "/assets/categories/makeup.jpg",
+  watches: "/assets/categories/watches.jpg",
+  accessories: "/assets/categories/accessories.jpg",
+  bags: "/assets/categories/bags.jpg",
+  "mobile-covers": "/assets/categories/mobile-covers.jpg",
+  vape: "/assets/categories/vape.jpg",
+};
+
 export default function Catalog() {
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeSubCategoryId, setActiveSubCategoryId] = useState<number | null>(null);
@@ -111,33 +121,57 @@ export default function Catalog() {
           <p className="font-serif text-[#D4AF37] text-xl tracking-widest">Our Collections</p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
+        <div className="flex md:flex-wrap md:justify-center gap-4 md:gap-6 mb-12 overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide px-2 md:px-0" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {categories.map((cat) => {
             const IconComponent = ICON_MAP[cat.icon] || ShoppingBag;
+            const bgImage = CATEGORY_IMAGES[cat.slug] || "";
             return (
               <motion.button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
                 className={cn(
-                  "group relative flex flex-col items-center justify-center w-24 h-28 md:w-32 md:h-36 transition-all duration-300 rounded-t-full border-b-4 shadow-lg",
+                  "group relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[140px] h-[180px] md:w-[160px] md:h-[200px] transition-all duration-300 rounded-2xl overflow-hidden shadow-lg",
                   activeCategoryId === cat.id 
-                    ? "bg-[#0B281F] border-[#D4AF37] shadow-[0_10px_20px_rgba(11,40,31,0.3)] z-10 scale-105" 
-                    : "bg-[#143D30] border-transparent hover:bg-[#0B281F] hover:-translate-y-1"
+                    ? "ring-2 ring-[#D4AF37] shadow-[0_10px_25px_rgba(11,40,31,0.4)] z-10 scale-105" 
+                    : "hover:shadow-xl hover:-translate-y-1"
                 )}
                 whileTap={{ scale: 0.95 }}
               >
+                {bgImage && (
+                  <img 
+                    src={bgImage} 
+                    alt={cat.nameAr} 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                )}
+                
                 <div className={cn(
-                  "mb-2 transition-colors duration-300",
-                  activeCategoryId === cat.id ? "text-[#D4AF37]" : "text-[#D4AF37]/70"
-                )}>
-                  <IconComponent className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
+                  "absolute inset-0 transition-opacity duration-300",
+                  activeCategoryId === cat.id 
+                    ? "bg-[#0B281F]/75" 
+                    : "bg-[#0B281F]/60 group-hover:bg-[#0B281F]/70"
+                )} />
+
+                <div className="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+                  <div className={cn(
+                    "mb-3 transition-all duration-300",
+                    activeCategoryId === cat.id ? "text-[#D4AF37] scale-110" : "text-[#D4AF37]/80"
+                  )}>
+                    <IconComponent className="w-9 h-9 md:w-11 md:h-11" strokeWidth={1.5} />
+                  </div>
+                  <span className={cn(
+                    "font-arabic font-bold text-base md:text-lg text-center transition-colors leading-tight",
+                    activeCategoryId === cat.id ? "text-white" : "text-white/90"
+                  )}>
+                    {cat.nameAr}
+                  </span>
+                  {activeCategoryId === cat.id && (
+                    <motion.div 
+                      layoutId="categoryIndicator"
+                      className="w-8 h-[2px] bg-[#D4AF37] mt-2 rounded-full"
+                    />
+                  )}
                 </div>
-                <span className={cn(
-                  "font-arabic font-bold text-sm md:text-base text-center transition-colors px-2 leading-tight",
-                  activeCategoryId === cat.id ? "text-white" : "text-white/80"
-                )}>
-                  {cat.nameAr}
-                </span>
               </motion.button>
             );
           })}
