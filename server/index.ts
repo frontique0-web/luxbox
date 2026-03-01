@@ -115,7 +115,7 @@ export async function initVercel() {
   }
 }
 
-if (process.env.NODE_ENV !== "vercel") {
+if (!process.env.VERCEL) {
   startServer();
 }
 
