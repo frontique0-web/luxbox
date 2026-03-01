@@ -1,0 +1,109 @@
+version: "2"
+type: frontend
+tech_stack:
+  - TypeScript
+  - React (Vite)
+  - wouter
+  - TailwindCSS
+  - shadcn/ui
+  - react-hook-form
+routes:
+  - path: /
+    file: src/pages/home.tsx
+    auth_required: false
+    description: Public homepage displaying products
+  - path: /product/:id
+    file: src/pages/product.tsx
+    auth_required: false
+    description: Product details page
+  - path: /admin/login
+    file: src/pages/admin/login.tsx
+    auth_required: false
+    description: Admin login page
+  - path: /admin
+    file: src/pages/admin/dashboard.tsx
+    auth_required: true
+    description: Admin dashboard overview
+  - path: /admin/products
+    file: src/pages/admin/products.tsx
+    auth_required: true
+    description: Admin products management (CRUD operations)
+  - path: /admin/categories
+    file: src/pages/admin/categories.tsx
+    auth_required: true
+    description: Admin categories management (CRUD operations)
+  - path: /admin/settings
+    file: src/pages/admin/settings.tsx
+    auth_required: true
+    description: Admin settings page
+features:
+  - name: Admin Login
+    description: Login with credentials to access admin dashboard
+    files:
+      - src/pages/admin/login.tsx
+      - src/hooks/use-admin-auth.tsx
+    entry_route: /admin/login
+    user_interactions:
+      - Fill username input field
+      - Fill password input field
+      - Click Login button to submit
+      - See error message on invalid credentials or redirect on success
+    api_calls:
+      - method: POST
+        endpoint: /api/admin/login
+    auth_required: false
+  - name: Admin Products Management
+    description: Create, read, update, delete products
+    files:
+      - src/pages/admin/products.tsx
+    entry_route: /admin/products
+    user_interactions:
+      - Click Add Product or Edit Product
+      - Fill out product form fields (name, description, price, etc.)
+      - Submit form to save product
+      - Click delete to remove a product
+    api_calls:
+      - method: GET
+        endpoint: /api/products
+      - method: POST
+        endpoint: /api/products
+      - method: PATCH
+        endpoint: /api/products/:id
+      - method: DELETE
+        endpoint: /api/products/:id
+    auth_required: true
+  - name: Admin Categories Management
+    description: Create, read, update, delete categories
+    files:
+      - src/pages/admin/categories.tsx
+    entry_route: /admin/categories
+    user_interactions:
+      - Click Add Category or Edit Category
+      - Fill out category name and description
+      - Submit form to save category
+      - Click delete to remove a category
+    api_calls:
+      - method: GET
+        endpoint: /api/categories
+      - method: POST
+        endpoint: /api/categories
+      - method: PATCH
+        endpoint: /api/categories/:id
+      - method: DELETE
+        endpoint: /api/categories/:id
+    auth_required: true
+  - name: Admin Settings
+    description: Manage store settings
+    files:
+      - src/pages/admin/settings.tsx
+    entry_route: /admin/settings
+    user_interactions:
+      - Update store name, currency, contact email, etc.
+      - Submit form to save settings
+    api_calls:
+      - method: GET
+        endpoint: /api/settings
+      - method: POST
+        endpoint: /api/settings
+    auth_required: true
+known_limitations: []

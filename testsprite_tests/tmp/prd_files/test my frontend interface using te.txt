@@ -1,0 +1,1 @@
+test my frontend interface using test sprite mcp to test all the forms inside my app inccludiing auth from dashbord 

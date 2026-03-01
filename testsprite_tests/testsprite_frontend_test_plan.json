@@ -1,0 +1,730 @@
+[
+  {
+    "id": "TC001",
+    "title": "Create a new product and verify it appears in the products table",
+    "description": "Verifies an admin can add a product via the form and see it listed in the products table.",
+    "category": "Admin Products Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Products\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Add Product\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Add Product\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Submit new product form with valid data and confirm success state",
+    "description": "Verifies the add-product form accepts valid input and returns the user to the products list with the new item visible.",
+    "category": "Admin Products Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Products\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Add Product\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Product A\" into the Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Add product validation: leave required field blank and verify validation message",
+    "description": "Verifies required-field validation prevents saving and shows an error message while staying on the form.",
+    "category": "Admin Products Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Products\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Add Product\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Products list loads: verify products table is visible after opening Products page",
+    "description": "Verifies the Products management page loads successfully and displays the products list UI.",
+    "category": "Admin Products Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Products\" in the admin navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Products\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Products table\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Add Product\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Add a new category successfully and see it in the categories table",
+    "description": "Verifies an admin can create a category and that it appears in the categories list after saving.",
+    "category": "Admin Categories Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Categories\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Add Category\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"Seasonal Specials\" into the Category Name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Limited-time seasonal items\" into the Description field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Seasonal Specials\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Category creation validation: name is required",
+    "description": "Verifies the category form blocks saving when the name is blank and shows a validation message.",
+    "category": "Admin Categories Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Categories\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Add Category\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"A category without a name\" into the Description field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Name is required\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Category form\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Edit an existing category successfully and see updates in the table",
+    "description": "Verifies an admin can edit a category and the updated values appear in the categories table.",
+    "category": "Admin Categories Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Categories\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Edit Category\" for the first listed category"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Updated Category Name\" into the Category Name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Updated category description\" into the Description field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Updated Category Name\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Delete a category successfully and verify it is removed from the table",
+    "description": "Verifies an admin can delete a category, confirm deletion, and the category no longer appears in the list.",
+    "category": "Admin Categories Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Categories\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Delete\" for the first listed category"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Confirm\" in the deletion confirmation dialog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Category deleted\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Cancel deletion from confirmation dialog leaves category unchanged",
+    "description": "Verifies that canceling a delete confirmation does not remove the category and returns to the list state.",
+    "category": "Admin Categories Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Categories\" in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Delete\" for the first listed category"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Confirm\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Cancel\" in the deletion confirmation dialog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Categories table\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Delete\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Categories list loads and is viewable after navigating from dashboard",
+    "description": "Verifies the categories management page can be opened from admin navigation and shows the list UI.",
+    "category": "Admin Categories Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Categories\" in the admin navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin/categories\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Categories table\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Add Category\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Load Admin Settings and successfully save updated settings",
+    "description": "Verifies an admin can open the settings page, update fields, save, and see a visible success confirmation.",
+    "category": "Admin Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" or \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Acme Test Store\" into the Store Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Update currency and contact email and save successfully",
+    "description": "Verifies saving works when multiple key fields (currency and contact email) are updated and a success message is shown.",
+    "category": "Admin Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" or \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Select \"USD\" from the Currency dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"store-test@example.com\" into the Contact Email field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Invalid contact email shows validation error and prevents save",
+    "description": "Verifies client-side validation blocks submission when the contact email is invalid and the user remains on the settings page.",
+    "category": "Admin Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" or \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"not-an-email\" into the Contact Email field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid email\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin/settings\""
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Required field validation prevents saving when store name is cleared",
+    "description": "Verifies the form shows a visible required-field error when Store Name is empty and does not proceed away from the settings page.",
+    "category": "Admin Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" or \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"\" into the Store Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Store name is required\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin/settings\""
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Settings page loads and displays key fields before editing",
+    "description": "Verifies the settings form renders expected inputs so the admin can edit settings.",
+    "category": "Admin Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" or \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Store Name\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Currency\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Contact Email\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Unsaved changes are not applied unless Save is clicked (happy path guard)",
+    "description": "Verifies that editing fields without saving does not show a saved confirmation and does not imply persistence.",
+    "category": "Admin Settings",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" or \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Temporary Name Change\" into the Store Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Dashboard\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Settings\" link or menu item in the admin navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings saved\" is not visible"
+      }
+    ]
+  }
+]

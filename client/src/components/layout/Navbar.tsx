@@ -20,8 +20,9 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "الرئيسية", href: "#hero" },
-    { name: "من نحن", href: "#about" },
     { name: "المنتجات", href: "#catalog" },
+    { name: "وصل حديثاً", href: "#new-arrivals" },
+    { name: "من نحن", href: "#about" },
     { name: "مميزاتنا", href: "#features" },
     { name: "تواصل معنا", href: "#contact" },
   ];
@@ -33,34 +34,28 @@ export default function Navbar() {
         scrolled ? "py-3" : "py-4"
       )}
     >
-      {/* Green Background with Slat Texture - only when scrolled */}
-      <div className={cn(
-        "absolute inset-0 transition-opacity duration-500",
-        scrolled ? "opacity-100" : "opacity-0"
-      )}>
+      {/* Green Background with Slat Texture */}
+      <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[#0B281F]" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_90%,rgba(255,255,255,0.03)_100%)] bg-[length:12px_100%] pointer-events-none" />
       </div>
-      
-      {/* Gold accent line at bottom - only when scrolled */}
-      <div className={cn(
-        "absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F] transition-opacity duration-500",
-        scrolled ? "opacity-100" : "opacity-0"
-      )} />
-      
+
+      {/* Gold accent line at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F]" />
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex items-center justify-between relative">
-          
+
           {/* Logo - Icon + Text Image (inverted to white) */}
           <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <img 
-              src="/logo.png" 
-              alt="Lux Box Icon" 
+            <img
+              src="/logo.png"
+              alt="Lux Box Icon"
               className="h-10 w-10 object-contain group-hover:scale-105 transition-transform duration-300 brightness-0 invert"
             />
-            <img 
-              src="/logo-text.png" 
-              alt="Lux Box" 
+            <img
+              src="/logo-text.png"
+              alt="Lux Box"
               className="h-6 object-contain brightness-0 invert"
             />
           </Link>
@@ -82,7 +77,7 @@ export default function Navbar() {
           {/* Right Side - Cart */}
           <div className="flex items-center gap-4">
             {/* Shopping Cart */}
-            <button 
+            <button
               onClick={openCart}
               className="relative p-2 text-white hover:text-[#D4AF37] transition-colors group"
               data-testid="button-cart"
@@ -115,7 +110,7 @@ export default function Navbar() {
           >
             {/* Slat texture for mobile menu */}
             <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_90%,rgba(255,255,255,0.03)_100%)] bg-[length:12px_100%] pointer-events-none" />
-            
+
             <div className="container mx-auto px-6 py-6 space-y-1 relative z-10">
               {navLinks.map((link) => (
                 <a

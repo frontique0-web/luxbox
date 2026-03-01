@@ -1,40 +1,143 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { 
+import {
   ShoppingBag,
   Loader2,
   ChevronLeft,
+  ChevronRight,
   Search,
   X
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCategories, fetchSubcategories, fetchBrands, fetchProducts, searchProducts } from "@/lib/api";
-import type { Category, Subcategory, Brand, Product } from "@shared/schema";
+import { fetchCategories, fetchSubcategories, fetchProducts, searchProducts } from "@/lib/api";
+import type { Product, Category, Subcategory } from "@shared/schema";
 import { useCart } from "@/context/CartContext";
 import VapeCatalog from "./VapeCatalog";
+import { useSettings, formatPrice } from "@/hooks/use-settings";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   perfumes: "/assets/categories/perfumes.png",
-  makeup: "/assets/categories/makeup.png",
+  makeup_care: "/assets/categories/makeup.png",
   watches: "/assets/categories/watches.png",
   accessories: "/assets/categories/accessories.png",
   bags: "/assets/categories/bags.png",
-  "mobile-covers": "/assets/categories/mobile-covers.png",
+  mobile: "/assets/categories/mobile-covers.png",
   vape: "/assets/categories/vape.png",
 };
 
+function ProductsGrid({
+  products,
+  loading,
+  addToCart
+}: {
+  products: Product[],
+  loading: boolean,
+  addToCart: (product: Product) => void
+}) {
+  const { currency, exchangeRate } = useSettings();
+
+  if (loading) {
+    return (
+      Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="group relative">
+          <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl border border-gray-100 z-10 relative">
+            <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gray-100 relative overflow-hidden p-6 animate-pulse" />
+            <div className="px-5 pt-4 pb-6 text-center bg-white relative">
+              <Skeleton className="h-6 w-3/4 mx-auto mb-2 bg-gray-200" />
+              <Skeleton className="h-6 w-1/2 mx-auto mb-4 bg-gray-200" />
+              <Skeleton className="h-14 w-full rounded-md bg-gray-200" />
+            </div>
+          </div>
+        </div>
+      ))
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="col-span-full flex flex-col items-center justify-center text-gray-400 py-20">
+        <Search className="w-16 h-16 mb-4 opacity-20" />
+        <p className="font-arabic text-lg">لا توجد منتجات لعرضها</p>
+      </div>
+    );
+  }
+
+  return (
+    <AnimatePresence mode="popLayout">
+      {products.map((product, index) => (
+        <motion.div
+          key={product.id}
+          layout
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{
+            duration: 0.4,
+            delay: index * 0.06,
+            ease: [0.25, 0.46, 0.45, 0.94]
+          }}
+          className="group relative"
+        >
+          <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl border border-gray-100 z-10 relative hover:shadow-2xl transition-shadow duration-300">
+            <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gray-100 relative overflow-hidden p-6">
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+              />
+            </div>
+            <div className="px-5 pt-4 pb-6 text-center bg-white relative">
+              <h3 className="font-arabic text-lg font-semibold text-[#0B281F] mb-1">
+                {product.name}
+              </h3>
+              <p className="font-serif text-sm text-[#D4AF37] mb-1">
+                {formatPrice(product.price, currency, exchangeRate)}
+              </p>
+              <p className="text-gray-400 text-xs font-sans mb-4" dir="ltr">
+                الرمز: {product.code}
+              </p>
+              <motion.div whileTap={{ scale: 0.93 }}>
+                <Button
+                  onClick={() => addToCart(product)}
+                  className="w-full bg-[#D4AF37] hover:bg-[#B4941F] text-white font-arabic text-base py-3 rounded-md shadow-md transition-all duration-300 flex items-center justify-center"
+                >
+                  <ShoppingBag className="w-5 h-5 ml-2" />
+                  أضف إلى السلة
+                </Button>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </AnimatePresence>
+  );
+}
+
 export default function Catalog() {
+  const { currency, exchangeRate } = useSettings();
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeSubCategoryId, setActiveSubCategoryId] = useState<number | null>(null);
-  const [activeBrandId, setActiveBrandId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const isSearching = debouncedSearch.length > 0;
   const { addToCart } = useCart();
   const productsRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const categoriesScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    if (categoriesScrollRef.current) {
+      const scrollAmount = window.innerWidth > 768 ? 400 : 200;
+      categoriesScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const scrollToProducts = useCallback(() => {
     if (window.innerWidth < 768 && productsRef.current) {
@@ -58,18 +161,11 @@ export default function Catalog() {
     enabled: !!activeCategoryId
   });
 
-  const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["brands", activeSubCategoryId],
-    queryFn: () => fetchBrands(activeSubCategoryId!),
-    enabled: !!activeSubCategoryId
-  });
-
   const { data: products = [], isLoading: productsLoading } = useQuery({
-    queryKey: ["products", activeCategoryId, activeSubCategoryId, activeBrandId],
+    queryKey: ["products", activeCategoryId, activeSubCategoryId],
     queryFn: () => fetchProducts(
-      activeCategoryId ?? undefined, 
-      activeSubCategoryId ?? undefined,
-      activeBrandId ?? undefined
+      activeCategoryId ?? undefined,
+      activeSubCategoryId ?? undefined
     ),
     enabled: !!activeCategoryId
   });
@@ -80,15 +176,7 @@ export default function Catalog() {
     }
   }, [categories, activeCategoryId]);
 
-  useEffect(() => {
-    if (subcategories.length > 0 && !activeSubCategoryId) {
-      setActiveSubCategoryId(subcategories[0].id);
-    }
-  }, [subcategories, activeSubCategoryId]);
 
-  useEffect(() => {
-    setActiveBrandId(null);
-  }, [activeSubCategoryId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -111,38 +199,42 @@ export default function Catalog() {
   const handleCategoryChange = (categoryId: number) => {
     setActiveCategoryId(categoryId);
     setActiveSubCategoryId(null);
-    setActiveBrandId(null);
     scrollToProducts();
   };
 
   const handleSubcategoryChange = (subcategoryId: number) => {
     setActiveSubCategoryId(subcategoryId);
-    setActiveBrandId(null);
   };
 
   const activeCategory = categories.find(c => c.id === activeCategoryId);
   const isVapeCategory = activeCategory?.slug === "vape";
-  const hasBrands = brands.length > 0;
 
   if (categoriesLoading) {
     return (
-      <section className="py-24 bg-white flex items-center justify-center min-h-screen">
-        <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
+      <section className="py-24 bg-white flex flex-col items-center justify-center min-h-screen relative" style={{ backgroundImage: "url('/assets/marble-bg.png')" }}>
+        <div className="absolute inset-0 bg-white/40 pointer-events-none" />
+        <div className="container mx-auto px-6 relative z-10 flex flex-col items-center">
+          <Skeleton className="w-64 h-10 mb-4 bg-gray-200" />
+          <Skeleton className="w-48 h-6 mb-10 bg-gray-200" />
+          <div className="flex lg:flex-wrap lg:justify-center gap-5 lg:gap-6 w-full overflow-hidden px-4 lg:px-0">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="flex-shrink-0 w-[200px] h-[260px] lg:w-[155px] lg:h-[200px] rounded-t-full rounded-b-lg bg-gray-200" />
+            ))}
+          </div>
+        </div>
       </section>
     );
   }
 
   return (
-    <section id="catalog" className="pt-24 bg-cover bg-center bg-fixed min-h-screen relative" style={{ backgroundImage: "url('/assets/marble-bg.png')" }}>
+    <section id="catalog" className="pt-8 lg:pt-24 bg-cover bg-center bg-fixed min-h-screen relative" style={{ backgroundImage: "url('/assets/marble-bg.png')" }}>
       <div className="absolute inset-0 bg-white/40 pointer-events-none" />
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-10">
-          <h2 className="font-arabic font-bold text-4xl text-[#0B281F] mb-4">تسوق حسب القسم</h2>
-          <p className="font-serif text-[#D4AF37] text-xl tracking-widest">Our Collections</p>
-        </div>
 
-        <div className="max-w-lg mx-auto mb-10">
+      <div className="container mx-auto px-6 relative z-10 max-w-5xl">
+        <div className="max-w-lg mx-auto mb-8 mt-2 lg:mt-6">
+          <label className="block text-[#0B281F] font-arabic font-bold text-lg mb-3 text-center">
+            ابحث عن منتج أو أدخل كود المنتج هنا
+          </label>
           <div className="relative group">
             <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#D4AF37] transition-colors pointer-events-none" />
             <input
@@ -165,297 +257,353 @@ export default function Catalog() {
           </div>
         </div>
 
-        {!isSearching && (
-        <div className="flex md:flex-wrap md:justify-center gap-5 md:gap-6 mb-12 overflow-x-auto md:overflow-x-visible pt-3 pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide px-4 md:px-0" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
-          {categories.map((cat) => {
-            const bgImage = CATEGORY_IMAGES[cat.slug] || "";
-            const isActive = activeCategoryId === cat.id;
-            return (
-              <motion.button
-                key={cat.id}
-                onClick={() => handleCategoryChange(cat.id)}
-                className={cn(
-                  "group relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[130px] h-[170px] md:w-[155px] md:h-[200px] transition-all duration-300 overflow-hidden shadow-lg",
-                  "rounded-t-full rounded-b-lg",
-                  isActive
-                    ? "ring-2 ring-[#D4AF37] shadow-[0_10px_25px_rgba(212,175,55,0.3)] z-10 scale-105" 
-                    : "hover:shadow-xl hover:-translate-y-1"
-                )}
-                whileTap={{ scale: 0.95 }}
-              >
-                {bgImage && (
-                  <img 
-                    src={bgImage} 
-                    alt={cat.nameAr} 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                )}
-                
-                <div className={cn(
-                  "absolute inset-0 transition-all duration-300",
-                  isActive
-                    ? "bg-[#143D30]/65" 
-                    : "bg-[#1a4a3a]/50 group-hover:bg-[#143D30]/60"
-                )} />
-
-                <div className="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-                  <span className={cn(
-                    "font-arabic font-bold text-lg md:text-xl text-center transition-all leading-tight drop-shadow-lg",
-                    isActive ? "text-[#D4AF37]" : "text-white"
-                  )}>
-                    {cat.nameAr}
-                  </span>
-                  {isActive && (
-                    <motion.div 
-                      layoutId="categoryIndicator"
-                      className="w-10 h-[2px] bg-[#D4AF37] mt-3 rounded-full"
-                    />
-                  )}
-                </div>
-
-                {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F] rounded-b-lg" />
-                )}
-              </motion.button>
-            );
-          })}
+        <div className="flex justify-center items-center mb-6">
+          <h2 className="font-arabic font-bold text-2xl text-[#0B281F]">الأقسام</h2>
         </div>
+
+        {!isSearching && (
+          <div className="relative group/categories mb-12 w-full overflow-hidden">
+            {/* Desktop Layout (Hidden on mobile): No scroll, single row, compact */}
+            <div
+              className="hidden lg:flex py-4 items-center justify-center space-x-4 flex-nowrap w-full px-4"
+              dir="ltr"
+            >
+              {categories.map((cat, idx) => {
+                const bgImage = cat.imageUrl || CATEGORY_IMAGES[cat.slug] || "";
+                const isActive = activeCategoryId === cat.id;
+                return (
+                  <motion.button
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1, type: 'spring', stiffness: 100 }}
+                    key={cat.id}
+                    onClick={() => handleCategoryChange(cat.id)}
+                    className={cn(
+                      "relative flex-shrink flex-grow-0 flex flex-col items-center justify-end w-[20%] max-w-[140px] aspect-[3/4] transition-all duration-300 overflow-hidden shadow-sm",
+                      "rounded-2xl",
+                      isActive
+                        ? "ring-2 ring-[#0B281F] shadow-lg shadow-[#0B281F]/30 z-10 scale-105"
+                        : "hover:shadow-md hover:scale-105"
+                    )}
+                    whileTap={{ scale: 0.95 }}
+                    style={{ backgroundColor: bgImage ? 'transparent' : '#f3e8eb' }}
+                  >
+                    {bgImage && (
+                      <img
+                        src={bgImage}
+                        alt={cat.nameAr}
+                        className="absolute inset-0 w-full h-full object-cover origin-center transition-transform duration-700 hover:scale-110"
+                      />
+                    )}
+
+                    <div className={cn(
+                      "absolute inset-0 transition-all duration-500",
+                      isActive ? "bg-black/10" : "bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"
+                    )} />
+
+                    <div className="relative z-10 w-full py-2 px-1 text-center pb-3">
+                      <span className={cn(
+                        "font-arabic font-bold text-sm lg:text-base leading-tight block w-full transition-all drop-shadow-md",
+                        isActive ? "text-[#D4AF37]" : "text-white"
+                      )}>
+                        {cat.nameAr}
+                      </span>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Layout (Hidden on desktop): Original scrollable row */}
+            <div className="lg:hidden relative">
+              <div
+                ref={categoriesScrollRef}
+                className="flex gap-4 overflow-x-auto pt-3 pb-4 snap-x snap-mandatory scrollbar-hide px-4"
+                style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {categories.map((cat) => {
+                  const bgImage = cat.imageUrl || CATEGORY_IMAGES[cat.slug] || "";
+                  const isActive = activeCategoryId === cat.id;
+                  return (
+                    <motion.button
+                      key={cat.id}
+                      onClick={() => handleCategoryChange(cat.id)}
+                      className={cn(
+                        "relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[140px] aspect-[2/3] transition-all duration-300 overflow-hidden shadow-sm",
+                        "rounded-xl",
+                        isActive
+                          ? "ring-2 ring-[#0B281F] shadow-lg shadow-[#0B281F]/30 z-10 scale-105"
+                          : "hover:shadow-md hover:-translate-y-1"
+                      )}
+                      whileTap={{ scale: 0.95 }}
+                      style={{ backgroundColor: bgImage ? 'transparent' : '#f3e8eb' }}
+                    >
+                      {bgImage && (
+                        <img
+                          src={bgImage}
+                          alt={cat.nameAr}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500"
+                        />
+                      )}
+
+                      <div className={cn(
+                        "absolute inset-0 transition-all duration-300",
+                        isActive ? "bg-black/10" : "bg-black/20"
+                      )} />
+
+                      <div className="relative z-10 w-full bg-white/90 backdrop-blur-sm py-3 px-2 border-t border-white/40">
+                        <span className={cn(
+                          "font-arabic font-bold text-sm text-center block w-full transition-all",
+                          isActive ? "text-[#D4AF37]" : "text-[#0B281F]"
+                        )}>
+                          {cat.nameAr}
+                        </span>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         )}
 
       </div>
 
-        {isSearching ? (
-          <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[40px] md:rounded-t-[80px] border-t-4 border-[#D4AF37] shadow-2xl mt-8 overflow-hidden">
-            <div className="container mx-auto px-6">
-              <div className="text-center mb-8">
-                <p className="font-arabic text-lg text-gray-500">
-                  نتائج البحث عن: <span className="text-[#0B281F] font-bold">"{debouncedSearch}"</span>
-                </p>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12 min-h-[200px]">
-                {searchLoading ? (
-                  <div className="col-span-full flex items-center justify-center py-20">
-                    <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
-                  </div>
-                ) : searchResults.length === 0 ? (
-                  <div className="col-span-full flex flex-col items-center justify-center text-gray-400 py-20">
-                    <Search className="w-16 h-16 mb-4 opacity-20" />
-                    <p className="font-arabic text-lg">لا توجد نتائج للبحث</p>
-                  </div>
-                ) : (
-                  <AnimatePresence mode="popLayout">
-                    {searchResults.map((product) => (
-                      <motion.div
-                        key={product.id}
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.3 }}
-                        className="group relative"
-                      >
-                        <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#D4AF37]/30 transform group-hover:-translate-y-2 z-10 relative">
-                          <div className="absolute top-0 left-3 z-20">
-                            <div className="w-8 h-24 bg-gradient-to-b from-[#D4AF37] to-[#B4941F] shadow-md flex flex-col items-center justify-center relative">
-                              <div className="absolute bottom-0 left-0 right-0 h-4 bg-white" style={{ clipPath: "polygon(0 100%, 50% 0, 100% 100%)" }}></div>
-                              <span className="block transform -rotate-90 text-[#0B281F] text-[10px] font-bold uppercase tracking-widest whitespace-nowrap mb-2 origin-center translate-y-2">
-                                {product.badge}
-                              </span>
-                            </div>
-                          </div>
+      {isSearching ? (
+        <div ref={productsRef} className="relative pt-12 pb-20 bg-[#0B281F] rounded-t-[40px] lg:rounded-t-[80px] border-t-4 border-[#D4AF37] shadow-2xl mt-8 overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_90%,rgba(255,255,255,0.02)_100%)] bg-[length:100%_12px] pointer-events-none mix-blend-screen" />
+          <div className="absolute inset-0 bg-radial-gradient from-transparent to-[#04120e]/60 pointer-events-none" />
 
-                          <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gradient-to-br from-[#F5F5F5] to-[#E0E0E0] relative overflow-hidden flex items-center justify-center p-6 shadow-inner border border-white/50">
-                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-50" />
-                            <img 
-                              src={product.imageUrl}
-                              alt={product.name}
-                              className="w-full h-full object-contain relative z-10 mix-blend-multiply group-hover:scale-110 transition-transform duration-700 drop-shadow-xl" 
-                            />
-                          </div>
-
-                          <div className="px-5 pt-4 pb-6 text-center bg-white relative">
-                            <h3 className="font-serif font-bold text-lg text-[#0B281F] mb-1">{product.name}</h3>
-                            <p className="font-sans text-[#D4AF37] font-bold text-lg mb-4">{product.price}</p>
-                            
-                            <Button 
-                              onClick={() => addToCart(product)}
-                              className="w-full bg-[#0B281F] text-[#D4AF37] hover:bg-[#143D30] font-serif tracking-wider uppercase rounded-md py-6 shadow-lg transition-all duration-300"
-                            >
-                              إضافة للسلة
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0">
-                          <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50 rounded-md" />
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                )}
-              </div>
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="text-center mb-8">
+              <p className="font-arabic text-lg text-gray-400">
+                نتائج البحث عن: <span className="text-white font-bold">"{debouncedSearch}"</span>
+              </p>
             </div>
-          </div>
-        ) : (
-      <div ref={productsRef} className="relative pt-12 pb-20 bg-white/90 backdrop-blur-sm rounded-t-[80px] md:rounded-t-[150px] border-t-8 border-[#0B281F] shadow-2xl overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-4 bg-[#D4AF37]/20 blur-sm rounded-t-[80px] md:rounded-t-[150px]" />
-
-        <div className="container mx-auto px-6">
-          {isVapeCategory && activeCategoryId ? (
-            <VapeCatalog
-              categoryId={activeCategoryId}
-              onBack={() => {
-                if (categories.length > 0) {
-                  handleCategoryChange(categories[0].id);
-                }
-              }}
-            />
-          ) : (
-            <>
-              <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 relative z-10">
-                {subcategoriesLoading ? (
-                  <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
-                ) : (
-                  <AnimatePresence mode="wait">
-                    {subcategories.map((sub, idx) => (
-                      <motion.button
-                        key={`${activeCategoryId}-${sub.id}`}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ delay: idx * 0.05 }}
-                        onClick={() => handleSubcategoryChange(sub.id)}
-                        className={cn(
-                          "px-6 py-2 rounded-full border-2 transition-all duration-300 font-arabic text-sm md:text-base font-medium min-w-[120px]",
-                          activeSubCategoryId === sub.id
-                            ? "bg-[#0B281F] text-[#D4AF37] border-[#D4AF37] shadow-lg scale-105"
-                            : "bg-white text-gray-500 border-gray-200 hover:border-[#0B281F] hover:text-[#0B281F]"
-                        )}
-                      >
-                        {sub.nameAr}
-                      </motion.button>
-                    ))}
-                  </AnimatePresence>
-                )}
-              </div>
-
-              {hasBrands && (
-                <div className="mb-12">
-                  <div className="flex flex-wrap justify-center gap-3 md:gap-4">
-                    {brandsLoading ? (
-                      <Loader2 className="w-6 h-6 animate-spin text-[#D4AF37]" />
-                    ) : (
-                      <AnimatePresence mode="wait">
-                        {activeBrandId && (
-                          <motion.button
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            onClick={() => setActiveBrandId(null)}
-                            className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2 font-arabic"
-                          >
-                            <ChevronLeft className="w-4 h-4" />
-                            كل الماركات
-                          </motion.button>
-                        )}
-                        {brands.map((brand, idx) => (
-                          <motion.button
-                            key={`brand-${brand.id}`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ delay: idx * 0.03 }}
-                            onClick={() => setActiveBrandId(brand.id)}
-                            className={cn(
-                              "px-5 py-3 rounded-xl border-2 transition-all duration-300 font-arabic text-sm font-medium flex flex-col items-center gap-1 min-w-[100px]",
-                              activeBrandId === brand.id
-                                ? "bg-[#D4AF37] text-[#0B281F] border-[#D4AF37] shadow-lg scale-105"
-                                : "bg-white text-gray-700 border-gray-200 hover:border-[#D4AF37] hover:text-[#0B281F]"
-                            )}
-                          >
-                            <span className="font-bold">{brand.nameAr}</span>
-                            {brand.price && (
-                              <span className="text-xs opacity-80">{brand.price}</span>
-                            )}
-                          </motion.button>
-                        ))}
-                      </AnimatePresence>
-                    )}
+            <div className="grid grid-cols-2 lg:grid-cols-6 gap-x-4 gap-y-12 min-h-[200px]">
+              {searchLoading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="group relative">
+                    <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl border border-gray-100 z-10 relative">
+                      <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gray-100 relative overflow-hidden p-6 animate-pulse" />
+                      <div className="px-5 pt-4 pb-6 text-center bg-white relative">
+                        <Skeleton className="h-6 w-3/4 mx-auto mb-2 bg-gray-200" />
+                        <Skeleton className="h-6 w-1/2 mx-auto mb-4 bg-gray-200" />
+                        <Skeleton className="h-14 w-full rounded-md bg-gray-200" />
+                      </div>
+                    </div>
                   </div>
+                ))
+              ) : searchResults.length === 0 ? (
+                <div className="col-span-full flex flex-col items-center justify-center text-gray-400 py-20">
+                  <Search className="w-16 h-16 mb-4 opacity-20 text-white" />
+                  <p className="font-arabic text-lg text-white">لا توجد نتائج للبحث</p>
                 </div>
-              )}
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {searchResults.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.3 }}
+                      className="group relative h-full"
+                    >
+                      <Link href={`/product/${product.id}`} className="block h-full group relative">
+                        <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 z-10 relative flex flex-col h-full">
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12 min-h-[400px]">
-                {productsLoading ? (
-                  <div className="col-span-full flex items-center justify-center py-20">
-                    <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
-                  </div>
-                ) : (
-                  <>
-                    <AnimatePresence mode="popLayout">
-                      {products.map((product) => (
-                        <motion.div
-                          key={product.id}
-                          layout
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.3 }}
-                          className="group relative"
-                        >
-                          <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#D4AF37]/30 transform group-hover:-translate-y-2 z-10 relative">
-                            <div className="absolute top-0 left-3 z-20">
-                              <div className="w-8 h-24 bg-gradient-to-b from-[#D4AF37] to-[#B4941F] shadow-md flex flex-col items-center justify-center relative">
-                                <div className="absolute bottom-0 left-0 right-0 h-4 bg-white" style={{ clipPath: "polygon(0 100%, 50% 0, 100% 100%)" }}></div>
-                                <span className="block transform -rotate-90 text-[#0B281F] text-[10px] font-bold uppercase tracking-widest whitespace-nowrap mb-2 origin-center translate-y-2">
+                          {product.badge && (
+                            <div className="absolute top-4 right-4 z-20">
+                              <div className="bg-[#D4AF37]/90 backdrop-blur-sm px-2 py-1 rounded border border-[#D4AF37]/30 shadow-sm">
+                                <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
                                   {product.badge}
                                 </span>
                               </div>
                             </div>
+                          )}
 
-                            <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gradient-to-br from-[#F5F5F5] to-[#E0E0E0] relative overflow-hidden flex items-center justify-center p-6 shadow-inner border border-white/50">
-                              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-50" />
-                              <img 
-                                src={product.imageUrl}
-                                alt={product.name}
-                                className="w-full h-full object-contain relative z-10 mix-blend-multiply group-hover:scale-110 transition-transform duration-700 drop-shadow-xl" 
-                              />
+                          <div className="aspect-[4/5] w-full bg-[#fcfcfc] relative overflow-hidden flex items-center justify-center p-4">
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-500"
+                            />
+                          </div>
+
+                          <div className="px-4 pt-4 pb-5 text-right bg-white relative flex-grow flex flex-col justify-between">
+                            <div>
+                              <h3 className="font-arabic font-medium text-sm lg:text-base text-gray-800 mb-2 line-clamp-2 leading-snug">{product.name}</h3>
                             </div>
 
-                            <div className="px-5 pt-4 pb-6 text-center bg-white relative">
-                              <h3 className="font-serif font-bold text-lg text-[#0B281F] mb-1">{product.name}</h3>
-                              <p className="font-sans text-[#D4AF37] font-bold text-lg mb-4">{product.price}</p>
-                              
-                              <Button 
-                                onClick={() => addToCart(product)}
-                                className="w-full bg-[#0B281F] text-[#D4AF37] hover:bg-[#143D30] font-serif tracking-wider uppercase rounded-md py-6 shadow-lg transition-all duration-300"
-                                data-testid={`button-add-to-cart-${product.id}`}
-                              >
-                                إضافة للسلة
-                              </Button>
+                            <div className="mt-auto">
+                              <div className="flex justify-start items-center gap-2">
+                                <span className="font-sans text-gray-600 font-bold text-sm lg:text-base">{formatPrice(product.price, currency, exchangeRate)}</span>
+                              </div>
                             </div>
                           </div>
-                          
-                          <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0">
-                            <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50 rounded-md" />
-                          </div>
-                        </motion.div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div ref={productsRef} className="relative pt-12 pb-20 bg-[#0B281F] rounded-t-[80px] lg:rounded-t-[150px] border-t-8 border-[#D4AF37] shadow-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_90%,rgba(255,255,255,0.02)_100%)] bg-[length:100%_12px] pointer-events-none mix-blend-screen" />
+          <div className="absolute inset-0 bg-radial-gradient from-transparent to-[#04120e]/60 pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-4 bg-[#D4AF37]/20 blur-sm rounded-t-[80px] lg:rounded-t-[150px] z-10" />
+
+          <div className="container mx-auto px-6 relative z-10">
+            {isVapeCategory && activeCategoryId ? (
+              <VapeCatalog
+                categoryId={activeCategoryId}
+                onBack={() => {
+                  if (categories.length > 0) {
+                    handleCategoryChange(categories[0].id);
+                  }
+                }}
+              />
+            ) : (
+              <>
+                <div className="flex flex-wrap justify-center gap-3 lg:gap-4 mb-8 relative z-10">
+                  {subcategoriesLoading ? (
+                    Array.from({ length: 4 }).map((_, i) => (
+                      <Skeleton key={i} className="min-w-[120px] h-10 lg:h-12 rounded-full bg-gray-200" />
+                    ))
+                  ) : (
+                    <AnimatePresence mode="wait">
+                      {subcategories.length > 0 && (
+                        <motion.button
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          onClick={() => handleSubcategoryChange(null as any)}
+                          className={cn(
+                            "px-6 py-2 rounded-full border-2 transition-all duration-300 font-arabic text-sm lg:text-base font-medium min-w-[120px]",
+                            activeSubCategoryId === null
+                              ? "bg-[#0B281F] text-[#D4AF37] border-[#D4AF37] shadow-lg scale-105"
+                              : "bg-white text-gray-500 border-gray-200 hover:border-[#0B281F] hover:text-[#0B281F]"
+                          )}
+                        >
+                          الكل
+                        </motion.button>
+                      )}
+                      {subcategories.map((sub, idx) => (
+                        <motion.button
+                          key={`${activeCategoryId}-${sub.id}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ delay: idx * 0.05 }}
+                          onClick={() => handleSubcategoryChange(sub.id)}
+                          className={cn(
+                            "px-6 py-2 rounded-full border-2 transition-all duration-300 font-arabic text-sm lg:text-base font-medium min-w-[120px]",
+                            activeSubCategoryId === sub.id
+                              ? "bg-[#0B281F] text-[#D4AF37] border-[#D4AF37] shadow-lg scale-105"
+                              : "bg-white text-gray-500 border-gray-200 hover:border-[#0B281F] hover:text-[#0B281F]"
+                          )}
+                        >
+                          {sub.nameAr}
+                        </motion.button>
                       ))}
                     </AnimatePresence>
-                    
-                    {products.length === 0 && !productsLoading && (
-                      <div className="col-span-full flex flex-col items-center justify-center text-gray-400 py-20">
-                        <ShoppingBag className="w-16 h-16 mb-4 opacity-20" />
-                        <p className="font-arabic text-lg">لا توجد منتجات حالياً في هذا القسم</p>
+                  )}
+                </div>
+
+
+
+                <div className="grid grid-cols-2 lg:grid-cols-6 gap-x-4 gap-y-12 min-h-[400px]">
+                  {productsLoading ? (
+                    Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="group relative">
+                        <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl border border-gray-100 z-10 relative">
+                          <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gray-100 relative overflow-hidden p-6 animate-pulse" />
+                          <div className="px-5 pt-4 pb-6 text-center bg-white relative">
+                            <Skeleton className="h-6 w-3/4 mx-auto mb-2 bg-gray-200" />
+                            <Skeleton className="h-6 w-1/2 mx-auto mb-4 bg-gray-200" />
+                            <Skeleton className="h-14 w-full rounded-md bg-gray-200" />
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-        )}
-    </section>
+                    ))
+                  ) : (
+                    <>
+                      <AnimatePresence mode="popLayout">
+                        {products.map((product) => (
+                          <motion.div
+                            key={product.id}
+                            layout
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.3 }}
+                            className="group relative h-full"
+                          >
+                            <Link href={`/product/${product.id}`} className="block h-full group relative">
+                              <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 z-10 relative flex flex-col h-full">
+
+                                {product.badge && (
+                                  <div className="absolute top-4 right-4 z-20">
+                                    <div className="bg-[#D4AF37]/90 backdrop-blur-sm px-2 py-1 rounded border border-[#D4AF37]/30 shadow-sm">
+                                      <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
+                                        {product.badge}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div className="aspect-[4/5] w-full bg-[#fcfcfc] relative overflow-hidden flex items-center justify-center p-4">
+                                  <img
+                                    src={product.imageUrl}
+                                    alt={product.name}
+                                    className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-500"
+                                  />
+                                </div>
+
+                                <div className="px-5 pt-6 pb-6 text-center bg-white relative flex-grow flex flex-col justify-between">
+                                  <div>
+                                    <h3 className="font-serif font-bold text-lg lg:text-xl text-[#0B281F] mb-1 line-clamp-2">{product.name}</h3>
+                                    {product.description && (
+                                      <p className="font-arabic text-xs text-gray-500 mb-3 line-clamp-1 leading-relaxed">
+                                        {product.description}
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  <div className="mt-auto pt-2 border-t border-gray-50">
+                                    <div className="flex justify-center items-center gap-2">
+                                      <span className="font-sans text-[#D4AF37] font-bold text-lg">{formatPrice(product.price, currency, exchangeRate)}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="absolute -bottom-2 left-4 right-4 h-4 bg-[#D4AF37]/20 blur-xl rounded-full -z-10 group-hover:bg-[#D4AF37]/40 transition-colors duration-500" />
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+
+                      {products.length === 0 && !productsLoading && (
+                        <div className="col-span-full flex flex-col items-center justify-center text-gray-400 py-20">
+                          <ShoppingBag className="w-16 h-16 mb-4 opacity-20 text-white" />
+                          <p className="font-arabic text-lg text-white">لا توجد منتجات حالياً في هذا القسم</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div >
+      )
+      }
+    </section >
   );
 }

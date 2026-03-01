@@ -1,0 +1,41 @@
+🚀 Starting test execution...
+Proxy port: 54601
+Tunnel started successfully! Proxy URL: http://4116a119-5150-4f6f-a8c6-4f7bbc478f06:A8ICTkZpqC7mGSZOT93CpYTWGAKtTn30@tun.testsprite.com:8080
+⚡ Running tests...
+This process may take anywhere from several minutes up to 15 minutes to complete.
+
+✅ Please ensure:
+  • Your local servers are running and reachable
+  • Your internet connection remains stable throughout the process
+❌ [224] Connection 99624dc3-c689-4142-a736-51aff1e4225e failed: Timeout connecting to tun.testsprite.com:7300
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+❌ [376] Connection ce1c8c3b-79b9-4bf2-b520-cffa05431902 failed: Timeout connecting to tun.testsprite.com:7300
+❌ [379] Connection 979f0cb8-0b13-460a-87ce-5f6d79d67d15 failed: Timeout connecting to tun.testsprite.com:7300
+❌ [244] Connection e733a8f2-f4bc-4b22-9cd1-9282de1831c5 failed: Timeout waiting for message
+❌ [253] Connection 91855d42-aafd-4b99-a905-7f7e5ed699c3 failed: Timeout waiting for message
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+checkPortListening timeout: 5002 localhost
+❌ [505] Connection f9e8d6c2-ea8a-45f5-abf7-555422554030 failed: Timeout connecting to localhost:54601
+❌ [506] Connection e046282c-8158-4059-8b16-76248d6ac72f failed: Timeout connecting to tun.testsprite.com:7300
+❌ [507] Connection 7776b419-f45a-46c0-bcb6-04cdabf877a6 failed: Timeout connecting to tun.testsprite.com:7300
+❌ [508] Connection 142e166f-7e6c-40bc-8b71-6909a7ad362f failed: Timeout connecting to tun.testsprite.com:7300
+❌ [509] Connection f864ed91-b858-43a5-b2e4-6825114d9c5c failed: Timeout connecting to tun.testsprite.com:7300
+❌ [510] Connection 05db2f94-f7d9-4632-a1bb-2a2248beaa20 failed: Timeout connecting to tun.testsprite.com:7300
+❌ [511] Connection 606b0d6c-7cab-4577-9e79-644709f87f43 failed: Timeout connecting to tun.testsprite.com:7300
+❌ [341] Connection 63dadf6c-d251-4169-9ecb-a2a6565668e4 failed: Timeout waiting for message
+❌ [336] Connection e39a77e7-ce0e-439e-844a-a6d4cee3ff46 failed: Timeout waiting for message
+❌ [321] Connection ace93756-cbb6-4e9d-8d07-4e24f4eb51bc failed: Timeout waiting for message
+❌ [373] Connection 4e8ec3ea-432b-466f-94c6-16734264af77 failed: Timeout waiting for message
+❌ [372] Connection 2d9496b6-bcb3-409c-b87f-e5ec15981bb9 failed: Timeout waiting for message
+❌ [354] Connection bc9548cf-d431-40d9-b006-4aaa1a36eeeb failed: Timeout waiting for message

@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import type { Product } from "@shared/schema";
+import { useSettings, formatPrice } from "@/hooks/use-settings";
+import { useCartToast, CartToastContainer } from "@/components/cart/CartToast";
 
 interface CartItem {
   product: Product;
@@ -40,6 +42,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("luxbox-cart", JSON.stringify(items));
   }, [items]);
 
+  const { toasts, showToast } = useCartToast();
+
   const addToCart = (product: Product) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -52,6 +56,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { product, quantity: 1 }];
     });
+    showToast(product.name);
   };
 
   const removeFromCart = (productId: number) => {
@@ -76,8 +81,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  const totalPrice = items.reduce((sum, item) => {
-    const price = parseFloat(item.product.price.replace(/[^0-9.]/g, "")) || 0;
+  // We keep the internal price calculation in base numbers (USD) and let the UI handle the multiplier
+  const baseTotalPrice = items.reduce((sum, item) => {
+    // Extract base number from "AED 150" or "$150" or "150 ل.س"
+    const rawNumberStr = item.product.price.replace(/(?:AED|EAD|د\.إ|ل\.س|\$)\s*/ig, '').trim();
+    const price = parseFloat(rawNumberStr) || 0;
     return sum + price * item.quantity;
   }, 0);
 
@@ -93,13 +101,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         clearCart,
         totalItems,
-        totalPrice,
+        totalPrice: baseTotalPrice,
         isOpen,
         openCart,
         closeCart,
       }}
     >
       {children}
+      <CartToastContainer toasts={toasts} />
     </CartContext.Provider>
   );
 }

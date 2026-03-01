@@ -1,4 +1,5 @@
 import { useCart } from "@/context/CartContext";
+import { useSettings, formatPrice } from "@/hooks/use-settings";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, Trash2, ShoppingBag, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,26 +8,27 @@ const WHATSAPP_NUMBER = "963965270528";
 
 export default function CartSidebar() {
   const { items, isOpen, closeCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
+  const { currency, exchangeRate } = useSettings();
 
   const handleWhatsAppCheckout = () => {
     if (items.length === 0) return;
 
     let message = "مرحباً، أريد طلب المنتجات التالية:\n\n";
-    
+
     items.forEach((item, idx) => {
       message += `${idx + 1}. ${item.product.name}\n`;
       message += `   الكمية: ${item.quantity}\n`;
-      message += `   السعر: ${item.product.price}\n\n`;
+      message += `   السعر: ${formatPrice(item.product.price, currency, exchangeRate)}\n\n`;
     });
 
     message += `─────────────\n`;
-    message += `المجموع: ${totalPrice.toLocaleString('ar-SY')} ل.س\n`;
+    message += `المجموع: ${formatPrice(totalPrice.toString(), currency, exchangeRate)}\n`;
     message += `عدد المنتجات: ${totalItems}\n\n`;
     message += `شكراً لكم! 🌟`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-    
+
     window.open(whatsappUrl, "_blank");
   };
 
@@ -77,61 +79,78 @@ export default function CartSidebar() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {items.map((item) => (
-                    <div
-                      key={item.product.id}
-                      className="bg-gray-50 rounded-xl p-4 flex gap-4"
-                    >
-                      {/* Product Image */}
-                      <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 border border-gray-100">
-                        <img
-                          src={item.product.imageUrl}
-                          alt={item.product.name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-
-                      {/* Details */}
-                      <div className="flex-1">
-                        <h3 className="font-serif font-bold text-[#0B281F] text-sm mb-1">
-                          {item.product.name}
-                        </h3>
-                        <p className="text-[#D4AF37] font-bold text-sm mb-3">
-                          {item.product.price}
-                        </p>
-
-                        {/* Quantity Controls */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 bg-white rounded-full border border-gray-200 p-1">
-                            <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                              className="w-7 h-7 rounded-full bg-gray-100 hover:bg-[#0B281F] hover:text-white flex items-center justify-center transition-colors"
-                              data-testid={`button-decrease-${item.product.id}`}
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
-                            <span className="font-bold text-sm w-6 text-center" data-testid={`text-quantity-${item.product.id}`}>
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                              className="w-7 h-7 rounded-full bg-gray-100 hover:bg-[#0B281F] hover:text-white flex items-center justify-center transition-colors"
-                              data-testid={`button-increase-${item.product.id}`}
-                            >
-                              <Plus className="w-4 h-4" />
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => removeFromCart(item.product.id)}
-                            className="text-red-400 hover:text-red-600 transition-colors"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
+                  <AnimatePresence mode="popLayout">
+                    {items.map((item) => (
+                      <motion.div
+                        key={item.product.id}
+                        layout
+                        initial={{ opacity: 0, x: 80, scale: 0.8 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: 80, scale: 0.8, transition: { duration: 0.3 } }}
+                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                        className="bg-gray-50 rounded-xl p-4 flex gap-4"
+                      >
+                        {/* Product Image */}
+                        <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 border border-gray-100">
+                          <img
+                            src={item.product.imageUrl}
+                            alt={item.product.name}
+                            className="w-full h-full object-contain"
+                          />
                         </div>
-                      </div>
-                    </div>
-                  ))}
+
+                        {/* Details */}
+                        <div className="flex-1">
+                          <h3 className="font-serif font-bold text-[#0B281F]">
+                            {item.product.name}
+                          </h3>
+                          <p className="text-[#D4AF37] font-bold text-sm mb-3">
+                            {formatPrice(item.product.price, currency, exchangeRate)}
+                          </p>
+
+                          {/* Quantity Controls */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 bg-white rounded-full border border-gray-200 p-1">
+                              <motion.button
+                                whileTap={{ scale: 0.85 }}
+                                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-[#0B281F] hover:text-white flex items-center justify-center transition-colors"
+                                data-testid={`button-decrease-${item.product.id}`}
+                              >
+                                <Minus className="w-4 h-4" />
+                              </motion.button>
+                              <motion.span
+                                key={item.quantity}
+                                initial={{ scale: 1.4, color: "#D4AF37" }}
+                                animate={{ scale: 1, color: "#0B281F" }}
+                                className="font-bold text-sm w-6 text-center"
+                                data-testid={`text-quantity-${item.product.id}`}
+                              >
+                                {item.quantity}
+                              </motion.span>
+                              <motion.button
+                                whileTap={{ scale: 0.85 }}
+                                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-[#0B281F] hover:text-white flex items-center justify-center transition-colors"
+                                data-testid={`button-increase-${item.product.id}`}
+                              >
+                                <Plus className="w-4 h-4" />
+                              </motion.button>
+                            </div>
+
+                            <motion.button
+                              whileTap={{ scale: 0.8, rotate: -15 }}
+                              whileHover={{ scale: 1.15 }}
+                              onClick={() => removeFromCart(item.product.id)}
+                              className="text-red-400 hover:text-red-600 transition-colors"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </motion.button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
             </div>
@@ -140,10 +159,12 @@ export default function CartSidebar() {
             {items.length > 0 && (
               <div className="border-t border-gray-100 p-6 space-y-4">
                 {/* Total */}
-                <div className="flex items-center justify-between">
-                  <span className="font-arabic text-gray-500">المجموع:</span>
+                <div className="flex justify-between items-center mb-6">
+                  <span className="font-arabic font-medium text-gray-500">
+                    المجموع الفرعي
+                  </span>
                   <span className="font-bold text-2xl text-[#0B281F]">
-                    {totalPrice.toLocaleString('ar-SY')} ل.س
+                    {formatPrice(totalPrice.toString(), currency, exchangeRate)}
                   </span>
                 </div>
 

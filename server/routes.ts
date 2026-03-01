@@ -6,7 +6,7 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
+
   // Get all categories
   app.get("/api/categories", async (req, res) => {
     try {
@@ -30,17 +30,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get brands by subcategory ID
-  app.get("/api/subcategories/:subcategoryId/brands", async (req, res) => {
-    try {
-      const subcategoryId = parseInt(req.params.subcategoryId);
-      const brandsList = await storage.getBrandsBySubcategoryId(subcategoryId);
-      res.json(brandsList);
-    } catch (error) {
-      console.error("Error fetching brands:", error);
-      res.status(500).json({ error: "Failed to fetch brands" });
-    }
-  });
+
 
   // Search products
   app.get("/api/products/search", async (req, res) => {
@@ -57,27 +47,204 @@ export async function registerRoutes(
       res.status(500).json({ error: "Failed to search products" });
     }
   });
+  // Manage Categories (Admin)
+  app.post("/api/admin/categories", async (req, res) => {
+    try {
+      const category = await storage.createCategory(req.body);
+      res.status(201).json(category);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create category" });
+    }
+  });
 
+  app.patch("/api/admin/categories/:id", async (req, res) => {
+    try {
+      const category = await storage.updateCategory(Number(req.params.id), req.body);
+      res.json(category);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update category" });
+    }
+  });
+
+  app.delete("/api/admin/categories/:id", async (req, res) => {
+    try {
+      await storage.deleteCategory(Number(req.params.id));
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete category" });
+    }
+  });
+
+  // Manage Subcategories (Admin)
+  app.post("/api/admin/subcategories", async (req, res) => {
+    try {
+      const subcategory = await storage.createSubcategory(req.body);
+      res.status(201).json(subcategory);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create subcategory" });
+    }
+  });
+
+  app.patch("/api/admin/subcategories/:id", async (req, res) => {
+    try {
+      const subcategory = await storage.updateSubcategory(Number(req.params.id), req.body);
+      res.json(subcategory);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update subcategory" });
+    }
+  });
+
+  app.delete("/api/admin/subcategories/:id", async (req, res) => {
+    try {
+      await storage.deleteSubcategory(Number(req.params.id));
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete subcategory" });
+    }
+  });
   // Get all products
   app.get("/api/products", async (req, res) => {
     try {
-      const { categoryId, subcategoryId, brandId } = req.query;
-      
+      const { categoryId, subcategoryId } = req.query;
+
       let allProducts;
-      if (brandId) {
-        allProducts = await storage.getProductsByBrandId(parseInt(brandId as string));
-      } else if (subcategoryId) {
+      if (subcategoryId) {
         allProducts = await storage.getProductsBySubcategoryId(parseInt(subcategoryId as string));
       } else if (categoryId) {
         allProducts = await storage.getProductsByCategoryId(parseInt(categoryId as string));
       } else {
         allProducts = await storage.getAllProducts();
       }
-      
+
       res.json(allProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
       res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  app.get("/api/products/:id", async (req, res) => {
+    try {
+      const product = await storage.getProductById(Number(req.params.id));
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      res.status(500).json({ error: "Failed to fetch product" });
+    }
+  });
+
+  // Authentication
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const cleanUsername = username?.trim();
+
+      const admin = await storage.getAdminByUsername(cleanUsername);
+
+      // In a real app, use bcrypt to compare hashed passwords
+      if (!admin || admin.password !== password?.trim()) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      // Since this is a very simplified admin dash, we just return success
+      // In a real app we'd set a JWT or session cookie here
+      res.json({ success: true, username: admin.username, adminId: admin.id });
+    } catch (error) {
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  // Admin Product Routes
+  app.get("/api/admin/products", async (req, res) => {
+    try {
+      const allProducts = await storage.adminGetProducts();
+      res.json(allProducts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  app.post("/api/admin/products", async (req, res) => {
+    try {
+      const product = await storage.createProduct(req.body);
+      res.status(201).json(product);
+    } catch (error: any) {
+      console.error("Failed to create product", error);
+      if (error.code === '23505' || (error.message && error.message.includes('unique'))) {
+        return res.status(400).json({ message: "كود المنتج مستخدم بالفعل في منتج آخر. يرجى اختيار كود مختلف (5 أرقام)." });
+      }
+      res.status(500).json({ error: "Failed to create product" });
+    }
+  });
+
+  app.patch("/api/admin/products/:id", async (req, res) => {
+    try {
+      const product = await storage.adminUpdateProduct(Number(req.params.id), req.body);
+      res.json(product);
+    } catch (error: any) {
+      console.error("Failed to update product", error);
+      if (error.code === '23505' || (error.message && error.message.includes('unique'))) {
+        return res.status(400).json({ message: "كود المنتج مستخدم بالفعل في منتج آخر. يرجى اختيار كود مختلف (5 أرقام)." });
+      }
+      res.status(500).json({ error: "Failed to update product" });
+    }
+  });
+
+  app.delete("/api/admin/products/:id", async (req, res) => {
+    try {
+      await storage.adminDeleteProduct(Number(req.params.id));
+      res.status(204).end();
+    } catch (error) {
+      console.error("Failed to delete product", error);
+      res.status(500).json({ error: "Failed to delete product" });
+    }
+  });
+
+  app.patch("/api/admin/products/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { isActive } = req.body;
+
+      const updatedProduct = await storage.adminUpdateProductStatus(Number(id), isActive);
+      res.json(updatedProduct);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update product status" });
+    }
+  });
+
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const stats = await storage.getDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch stats" });
+    }
+  });
+
+  // Settings Routes
+  app.get("/api/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch settings" });
+    }
+  });
+
+  app.post("/api/admin/settings", async (req, res) => {
+    try {
+      const { exchangeRate, currency } = req.body;
+      const currentSettings = await storage.getSettings();
+      const newSettings = await storage.updateSettings(currentSettings.id, {
+        exchangeRate,
+        currency
+      });
+      res.json(newSettings);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update settings" });
     }
   });
 

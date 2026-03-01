@@ -26,15 +26,15 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
-      
+    <section id="features" className="py-24 bg-white relative overflow-hidden">
+
       {/* Decorative top line */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
-      
+
       {/* Background soft shapes */}
       <div className="absolute top-1/2 -translate-y-1/2 right-0 w-[500px] h-[500px] rounded-full bg-[#0B281F]/[0.015] blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 -translate-y-1/2 left-0 w-[400px] h-[400px] rounded-full bg-[#D4AF37]/[0.03] blur-3xl pointer-events-none" />
-      
+
       {/* Vertical slats */}
       <div className="absolute top-0 left-0 h-full flex gap-[80px] opacity-[0.02] pointer-events-none">
         {[...Array(16)].map((_, i) => (
@@ -44,11 +44,11 @@ export default function Features() {
 
       {/* Arch pattern at top */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[150px] rounded-b-full border border-[#D4AF37]/10 opacity-30 pointer-events-none" />
-      
+
       <div className="container mx-auto px-6 relative z-10">
-        
+
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -69,8 +69,8 @@ export default function Features() {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, idx) => (
-            <motion.div 
-              key={idx} 
+            <motion.div
+              key={idx}
               className="group text-center"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ export default function Features() {
                 {/* Gold Base */}
                 <div className="w-28 h-2 mx-auto bg-gradient-to-r from-[#B4941F] via-[#D4AF37] to-[#B4941F] rounded-b-sm shadow-md" />
               </div>
-              
+
               {/* Content */}
               <h3 className="font-arabic font-bold text-xl text-[#0B281F] mb-3 group-hover:text-[#D4AF37] transition-colors">
                 {feature.title}
@@ -99,7 +99,7 @@ export default function Features() {
         </div>
 
         {/* Location Badge */}
-        <motion.div 
+        <motion.div
           className="mt-16 flex justify-center"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -115,7 +115,7 @@ export default function Features() {
         </motion.div>
 
       </div>
-      
+
       {/* Bottom line */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
     </section>

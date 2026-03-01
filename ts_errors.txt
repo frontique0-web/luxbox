@@ -1,0 +1,1 @@
+client/src/components/home/Catalog.tsx(529,30): error TS17008: JSX element 'Link' has no corresponding closing tag.

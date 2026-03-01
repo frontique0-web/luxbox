@@ -1,0 +1,20 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://127.0.0.1:5002",
+  "loginUser": "admin",
+  "loginPassword": "password123",
+  "executionArgs": {
+    "projectName": "Lux-Box-1zip",
+    "projectPath": "c:\\Users\\ahmad\\Desktop\\Lux-Box-1zip",
+    "testIds": [],
+    "additionalInstruction": "test all the forms inside my app including auth from dashboard and frontend",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-QAP7XNRDl1-kyxcAQOem9vMeg4tnSzW-pKDmDhs4tbH8uMFRTtAU2KFnfjebwGxA6-MfSmu6e-vo05MrnVn23oIg3g9VzJcDp7pYnHlhks1FAlPrhNJuq_vkLGPIdvR7os8"
+    }
+  },
+  "serverPort": 50091,
+  "proxy": "http://2c30fc9b-dda1-4732-961c-c58151dc2626:lA3AyEWkzDg9o6Qp6JX7FDD0wBLF1hJ1@tun.testsprite.com:8080"
+}

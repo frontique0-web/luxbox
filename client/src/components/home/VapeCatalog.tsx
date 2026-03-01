@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import {
   Loader2,
@@ -16,9 +17,10 @@ import {
   Zap,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSubcategories, fetchBrands, fetchProducts } from "@/lib/api";
-import type { Subcategory, Brand, Product } from "@shared/schema";
+import { fetchSubcategories, fetchProducts } from "@/lib/api";
+import type { Subcategory, Product } from "@shared/schema";
 import { useCart } from "@/context/CartContext";
+import { useSettings, formatPrice } from "@/hooks/use-settings";
 
 const VAPE_ICON_MAP: Record<string, any> = {
   "جوسات": Droplets,
@@ -43,99 +45,44 @@ interface VapeCatalogProps {
   onBack: () => void;
 }
 
-type ViewState = "subcategories" | "brands" | "products";
+type ViewState = "subcategories" | "products";
 
 export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
   const [viewState, setViewState] = useState<ViewState>("subcategories");
   const [activeSubId, setActiveSubId] = useState<number | null>(null);
-  const [activeBrandId, setActiveBrandId] = useState<number | null>(null);
-  const [breadcrumb, setBreadcrumb] = useState<string[]>(["الأراكيل والفيب"]);
   const { addToCart } = useCart();
 
   const { data: subcategories = [], isLoading: subsLoading } = useQuery({
     queryKey: ["subcategories", categoryId],
     queryFn: () => fetchSubcategories(categoryId),
   });
-
-  const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["brands", activeSubId],
-    queryFn: () => fetchBrands(activeSubId!),
-    enabled: !!activeSubId,
-  });
-
   const { data: products = [], isLoading: productsLoading } = useQuery({
-    queryKey: ["products", categoryId, activeSubId, activeBrandId],
-    queryFn: () =>
-      fetchProducts(
-        categoryId,
-        activeSubId ?? undefined,
-        activeBrandId ?? undefined
-      ),
+    queryKey: ["products", categoryId, activeSubId],
+    queryFn: () => fetchProducts(categoryId, activeSubId ?? undefined),
     enabled: viewState === "products" && !!activeSubId,
   });
 
-  const [skipBrands, setSkipBrands] = useState(false);
-
-  useEffect(() => {
-    if (viewState === "brands" && !brandsLoading && brands.length === 0 && activeSubId) {
-      setSkipBrands(true);
-      setViewState("products");
-    }
-  }, [viewState, brandsLoading, brands.length, activeSubId]);
-
   const handleSubClick = (sub: Subcategory) => {
     setActiveSubId(sub.id);
-    setActiveBrandId(null);
-    setBreadcrumb(["الأراكيل والفيب", sub.nameAr]);
-    setViewState("brands");
-    setSkipBrands(false);
-  };
-
-  const handleBrandClick = (brand: Brand) => {
-    setActiveBrandId(brand.id);
-    setBreadcrumb((prev) => [...prev.slice(0, 2), brand.nameAr]);
     setViewState("products");
   };
 
   const handleBack = () => {
-    if (viewState === "products" && skipBrands) {
-      setActiveSubId(null);
-      setActiveBrandId(null);
-      setBreadcrumb(["الأراكيل والفيب"]);
-      setViewState("subcategories");
-      setSkipBrands(false);
-      return;
-    }
     if (viewState === "products") {
-      setActiveBrandId(null);
-      setBreadcrumb((prev) => prev.slice(0, 2));
-      setViewState("brands");
-    } else if (viewState === "brands") {
       setActiveSubId(null);
-      setActiveBrandId(null);
-      setBreadcrumb(["الأراكيل والفيب"]);
       setViewState("subcategories");
     } else {
       onBack();
     }
   };
 
-  const handleBreadcrumbClick = (index: number) => {
-    if (index === 0) {
-      setActiveSubId(null);
-      setActiveBrandId(null);
-      setSkipBrands(false);
-      setBreadcrumb(["الأراكيل والفيب"]);
-      setViewState("subcategories");
-    } else if (index === 1 && !skipBrands) {
-      setActiveBrandId(null);
-      setBreadcrumb((prev) => prev.slice(0, 2));
-      setViewState("brands");
-    }
+  const handleTitleClick = () => {
+    setActiveSubId(null);
+    setViewState("subcategories");
   };
 
   return (
-    <div className="min-h-[600px]">
+    <div className="min-h-[600px] relative z-10">
       <div className="flex items-center gap-3 mb-8 flex-wrap">
         <button
           onClick={handleBack}
@@ -145,24 +92,23 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
           رجوع
         </button>
         <div className="flex items-center gap-2 text-sm font-arabic">
-          {breadcrumb.map((crumb, idx) => (
-            <span key={idx} className="flex items-center gap-2">
-              {idx > 0 && (
-                <ChevronLeft className="w-3 h-3 text-gray-400" />
-              )}
-              <button
-                onClick={() => handleBreadcrumbClick(idx)}
-                className={cn(
-                  "transition-colors",
-                  idx === breadcrumb.length - 1
-                    ? "text-[#D4AF37] font-bold"
-                    : "text-gray-500 hover:text-[#0B281F]"
-                )}
-              >
-                {crumb}
-              </button>
-            </span>
-          ))}
+          <button
+            onClick={handleTitleClick}
+            className={cn(
+              "hover:text-[#D4AF37] transition-colors",
+              viewState === "subcategories" ? "text-[#D4AF37] font-medium" : "text-gray-400"
+            )}
+          >
+            الأراكيل والفيب
+          </button>
+          {activeSubId && viewState === "products" && (
+            <>
+              <ChevronLeft className="w-3 h-3 text-gray-400 mt-1" />
+              <span className="text-[#D4AF37] font-medium">
+                {subcategories.find(s => s.id === activeSubId)?.nameAr}
+              </span>
+            </>
+          )}
         </div>
       </div>
 
@@ -229,9 +175,9 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
           </motion.div>
         )}
 
-        {viewState === "brands" && (
+        {viewState === "products" && (
           <motion.div
-            key="brands"
+            key="products"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
@@ -241,103 +187,8 @@ export default function VapeCatalog({ categoryId, onBack }: VapeCatalogProps) {
               {subcategories.find((s) => s.id === activeSubId)?.nameAr}
             </h3>
             <p className="font-serif text-[#D4AF37] text-center mb-10 tracking-widest text-sm">
-              اختر الماركة أو النوع
+              اختر المنتج
             </p>
-
-            {brandsLoading ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
-              </div>
-            ) : brands.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {brands.map((brand, idx) => (
-                  <motion.button
-                    key={brand.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.05 }}
-                    onClick={() => handleBrandClick(brand)}
-                    className="group relative overflow-hidden rounded-xl border-2 border-gray-100 hover:border-[#D4AF37] bg-white shadow-md hover:shadow-xl transition-all duration-400 p-5 text-center"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#0B281F]/0 to-[#0B281F]/5 group-hover:to-[#D4AF37]/10 transition-all duration-500" />
-
-                    {brand.imageUrl && (
-                      <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center">
-                        <img
-                          src={brand.imageUrl}
-                          alt={brand.nameAr}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    )}
-
-                    <h4 className="font-bold text-[#0B281F] group-hover:text-[#D4AF37] transition-colors text-sm mb-1 relative z-10">
-                      {brand.nameAr}
-                    </h4>
-
-                    {brand.puffs && (
-                      <div className="flex items-center justify-center gap-1 mt-2 relative z-10">
-                        <Zap className="w-3 h-3 text-[#D4AF37]" />
-                        <span className="text-xs text-gray-500 font-medium">
-                          {parseInt(brand.puffs).toLocaleString()} سحبة
-                        </span>
-                      </div>
-                    )}
-
-                    {brand.price && (
-                      <p className="text-xs text-[#D4AF37] font-bold mt-1 relative z-10">
-                        {brand.price}
-                      </p>
-                    )}
-                  </motion.button>
-                ))}
-              </div>
-            ) : (
-              <div className="flex justify-center py-20">
-                <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {viewState === "products" && (
-          <motion.div
-            key="products"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.3 }}
-          >
-            {skipBrands ? (
-              <>
-                <h3 className="font-arabic font-bold text-2xl text-[#0B281F] text-center mb-2">
-                  {subcategories.find((s) => s.id === activeSubId)?.nameAr}
-                </h3>
-                <p className="font-serif text-[#D4AF37] text-center mb-10 tracking-widest text-sm">
-                  اختر المنتج
-                </p>
-              </>
-            ) : (
-              <>
-                <h3 className="font-arabic font-bold text-2xl text-[#0B281F] text-center mb-2">
-                  {brands.find((b) => b.id === activeBrandId)?.nameAr}
-                </h3>
-                {brands.find((b) => b.id === activeBrandId)?.puffs && (
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <Zap className="w-4 h-4 text-[#D4AF37]" />
-                    <span className="font-arabic text-sm text-gray-500">
-                      {parseInt(
-                        brands.find((b) => b.id === activeBrandId)?.puffs || "0"
-                      ).toLocaleString()}{" "}
-                      سحبة
-                    </span>
-                  </div>
-                )}
-                <p className="font-serif text-[#D4AF37] text-center mb-10 tracking-widest text-sm">
-                  اختر المنتج
-                </p>
-              </>
-            )}
 
             <ProductsGrid
               products={products}
@@ -360,6 +211,8 @@ function ProductsGrid({
   loading: boolean;
   addToCart: (product: Product) => void;
 }) {
+  const { currency, exchangeRate } = useSettings();
+
   if (loading) {
     return (
       <div className="flex justify-center py-20">
@@ -390,50 +243,47 @@ function ProductsGrid({
             transition={{ duration: 0.3 }}
             className="group relative"
           >
-            <div className="bg-white rounded-t-2xl rounded-b-md overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#D4AF37]/30 transform group-hover:-translate-y-2 z-10 relative">
-              <div className="absolute top-0 left-3 z-20">
-                <div className="w-8 h-24 bg-gradient-to-b from-[#D4AF37] to-[#B4941F] shadow-md flex flex-col items-center justify-center relative">
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-4 bg-white"
-                    style={{
-                      clipPath: "polygon(0 100%, 50% 0, 100% 100%)",
-                    }}
-                  ></div>
-                  <span className="block transform -rotate-90 text-[#0B281F] text-[10px] font-bold uppercase tracking-widest whitespace-nowrap mb-2 origin-center translate-y-2">
-                    {product.badge}
-                  </span>
+            <Link href={`/product/${product.id}`} className="block h-full group relative">
+              <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 z-10 relative flex flex-col h-full">
+
+                {product.badge && (
+                  <div className="absolute top-4 right-4 z-20">
+                    <div className="bg-[#D4AF37]/90 backdrop-blur-sm px-2 py-1 rounded border border-[#D4AF37]/30 shadow-sm">
+                      <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
+                        {product.badge}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="aspect-[4/5] w-full bg-[#fcfcfc] relative overflow-hidden flex items-center justify-center p-4">
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+                <div className="px-5 pt-6 pb-6 text-center bg-white relative flex-grow flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-serif font-bold text-lg md:text-xl text-[#0B281F] mb-1 line-clamp-2">{product.name}</h3>
+                    {product.description && (
+                      <p className="font-arabic text-xs text-gray-500 mb-3 line-clamp-1 leading-relaxed">
+                        {product.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-auto pt-2 border-t border-gray-50">
+                    <div className="flex justify-center items-center gap-2">
+                      <span className="font-sans text-[#D4AF37] font-bold text-lg">{formatPrice(product.price, currency, exchangeRate)}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="h-[260px] w-[90%] mx-auto mt-4 rounded-lg bg-gradient-to-br from-[#F5F5F5] to-[#E0E0E0] relative overflow-hidden flex items-center justify-center p-6 shadow-inner border border-white/50">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-50" />
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-full h-full object-contain relative z-10 mix-blend-multiply group-hover:scale-110 transition-transform duration-700 drop-shadow-xl"
-                />
-              </div>
-
-              <div className="px-5 pt-4 pb-6 text-center bg-white relative">
-                <h3 className="font-serif font-bold text-lg text-[#0B281F] mb-1">
-                  {product.name}
-                </h3>
-                <p className="font-sans text-[#D4AF37] font-bold text-lg mb-4">
-                  {product.price}
-                </p>
-
-                <Button
-                  onClick={() => addToCart(product)}
-                  className="w-full bg-[#0B281F] text-[#D4AF37] hover:bg-[#143D30] font-serif tracking-wider uppercase rounded-md py-6 shadow-lg transition-all duration-300"
-                >
-                  إضافة للسلة
-                </Button>
-              </div>
-            </div>
-
-            <div className="absolute -bottom-4 left-0 right-0 h-4 bg-[#0B281F] rounded-md shadow-lg transform scale-x-110 -z-0 overflow-hidden">
-              <div className="absolute top-0 w-full h-[1px] bg-[#D4AF37]/50 rounded-md" />
-            </div>
+              <div className="absolute -bottom-2 left-4 right-4 h-4 bg-[#D4AF37]/20 blur-xl rounded-full -z-10 group-hover:bg-[#D4AF37]/40 transition-colors duration-500" />
+            </Link>
           </motion.div>
         ))}
       </AnimatePresence>

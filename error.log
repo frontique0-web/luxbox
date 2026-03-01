@@ -1,0 +1,12 @@
+Loading image...
+Error processing logo: TypeError: Jimp.read is not a function
+    at processLogo (C:\Users\ahmad\Desktop\Lux-Box-1zip\crop_logo.cjs:6:34)
+    at Object.<anonymous> (C:\Users\ahmad\Desktop\Lux-Box-1zip\crop_logo.cjs:102:1)
+    at Module._compile (node:internal/modules/cjs/loader:1804:14)
+    at Object..js (node:internal/modules/cjs/loader:1936:10)
+    at Module.load (node:internal/modules/cjs/loader:1525:32)
+    at Module._load (node:internal/modules/cjs/loader:1327:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
