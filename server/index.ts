@@ -102,11 +102,21 @@ async function startServer() {
   }
 }
 
-if (process.env.NODE_ENV !== "vercel") {
-  startServer();
-} else {
-  // If running in Vercel, manually register the routes without launching a listening HTTP server
-  registerRoutes(httpServer, app).catch(console.error);
+let isInitialized = false;
+
+export async function initVercel() {
+  if (isInitialized) return;
+  try {
+    await autoSeed();
+    await registerRoutes(httpServer, app);
+    isInitialized = true;
+  } catch (error) {
+    console.error("Vercel initialization failed:", error);
+  }
 }
 
-export default app;
+if (process.env.NODE_ENV !== "vercel") {
+  startServer();
+}
+
+export { app };
