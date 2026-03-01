@@ -1,3 +1,2 @@
-import "../dist/index.cjs";
-const { app } = require("../dist/index.cjs");
+const app = require("../dist/index.cjs").default;
 module.exports = app;
