@@ -65,7 +65,6 @@ app.use((req, res, next) => {
 async function startServer() {
   try {
     await autoSeed();
-    await registerRoutes(httpServer, app);
 
     app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
@@ -105,6 +104,9 @@ async function startServer() {
 
 if (process.env.NODE_ENV !== "vercel") {
   startServer();
+} else {
+  // If running in Vercel, manually register the routes without launching a listening HTTP server
+  registerRoutes(httpServer, app).catch(console.error);
 }
 
 export default app;
