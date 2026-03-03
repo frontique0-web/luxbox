@@ -41,18 +41,20 @@
     <!-- Center Content -->
     <div class="split-loader-content" id="loader-content">
       <div class="loader-logo-container">
-        <!-- Animated Golden Rings -->
-        <div class="golden-rings">
-          <div class="ring-outer"></div>
-          <div class="ring-inner"></div>
-          <div class="diamond-center"></div>
+        <!-- Modern Luxurious Loader -->
+        <div class="luxury-loader">
+          <div class="loader-diamond"></div>
+          <div class="loader-line loader-line-1"></div>
+          <div class="loader-line loader-line-2"></div>
+          <div class="loader-line loader-line-3"></div>
         </div>
       </div>
       <h1 class="loader-title">Lux Box</h1>
-      <p class="loader-subtitle" dir="rtl">جاري تجهيز الفخامة...</p>
+      <p class="loader-subtitle" dir="rtl">بوابة الفخامة تفتح الآن...</p>
     </div>
 
     <style>
+      /* Base Loader Styles */
       .split-loader {
         position: fixed;
         inset: 0;
@@ -61,57 +63,123 @@
         visibility: visible;
         overflow: hidden;
         background-color: transparent;
-        /* Let the doors cover everything */
       }
 
       .split-loader.hidden {
         visibility: hidden;
-        transition: visibility 0s linear 1.5s;
-        /* Hide completely after doors open */
+        transition: visibility 0s linear 1.8s;
       }
 
+      /* Arch Container (The "Hole" in the wall) */
+      .arch-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        /* Align arch from the bottom */
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* The visible frame around the doors */
+      .arch-frame {
+        width: 100%;
+        max-width: 800px;
+        height: 90vh;
+        /* Don't go all the way to top to show the arch */
+        position: relative;
+        overflow: hidden;
+        border-top-left-radius: 400px;
+        /* Perfect arch */
+        border-top-right-radius: 400px;
+        box-shadow: 0 0 0 100vmax #f3e8eb,
+          inset 0 15px 30px rgba(0, 0, 0, 0.2),
+          0 0 40px rgba(212, 175, 55, 0.15);
+        /* The wall and shadow inside arch */
+      }
+
+      /* The Golden Rim around the arch */
+      .arch-frame::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 4px solid #D4AF37;
+        border-bottom: none;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+        pointer-events: none;
+        z-index: 5;
+        box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.3), 0 0 20px rgba(212, 175, 55, 0.3);
+      }
+
+      /* The actual doors that slide open */
       .split-door {
         position: absolute;
         top: 0;
         width: 50vw;
+        /* Take full width of screen, the arch frame crops it */
         height: 100vh;
-        /* Default styling for the shelves. Replace linear-gradient/url with your own shelf image if needed */
-        background-color: #0B281F;
-        background-image: linear-gradient(rgba(11, 40, 31, 0.85), rgba(11, 40, 31, 0.95)), url('/assets/marble-bg.png');
+        background-color: #0d3025;
+        /* Slightly lighter/richer green */
+        background-image:
+          linear-gradient(rgba(13, 48, 37, 0.85), rgba(7, 26, 20, 0.98)),
+          url('/assets/marble-bg.png');
         background-size: 100vw 100vh;
-        /* Ensure the image is continuous across both doors */
         background-attachment: fixed;
         background-repeat: no-repeat;
-        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        transition: transform 1.5s cubic-bezier(0.85, 0, 0.15, 1);
         z-index: 1;
-        box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6);
-      }
-
-      /* Subtle CSS shelf lines for aesthetics */
-      .shelf-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom, transparent 48%, rgba(212, 175, 55, 0.15) 49%, rgba(212, 175, 55, 0.4) 50%, rgba(0, 0, 0, 0.5) 51%, transparent 53%);
-        background-size: 100% 25vh;
-        /* Creates 4 shelf divisions */
-        pointer-events: none;
       }
 
       .split-door-left {
         left: 0;
         background-position: left center;
         border-right: 2px solid #D4AF37;
+        box-shadow: inset -20px 0 50px rgba(0, 0, 0, 0.6);
       }
 
       .split-door-right {
         right: 0;
         background-position: right center;
-        border-left: 2px solid transparent;
-        /* The left door already has the border, but we can add a subtle shadow */
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.6);
+        border-left: 1px solid rgba(212, 175, 55, 0.3);
+        box-shadow: inset 20px 0 50px rgba(0, 0, 0, 0.6);
       }
 
-      /* When the page loads, the doors slide open */
+      /* Realistic 3D Shelves */
+      .shelf-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+          /* Top highlight */
+          repeating-linear-gradient(to bottom,
+            transparent 0%,
+            transparent 19%,
+            rgba(212, 175, 55, 0.4) 19.2%,
+            rgba(255, 255, 255, 0.1) 19.5%,
+
+            /* Shelf face (Green) */
+            #144535 19.8%,
+            #0B281F 21%,
+
+            /* Bottom shadow */
+            rgba(0, 0, 0, 0.8) 21.2%,
+            transparent 22%,
+            transparent 25%);
+        background-size: 100% 100vh;
+        pointer-events: none;
+      }
+
+      /* Add inner glow for depth */
+      .shelf-overlay::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+        mix-blend-mode: multiply;
+      }
+
+      /* Door Opening Animation */
       .split-loader.loaded .split-door-left {
         transform: translateX(-100%);
       }
@@ -120,9 +188,11 @@
         transform: translateX(100%);
       }
 
+      /* Content Styling */
       .split-loader-content {
         position: absolute;
-        top: 50%;
+        top: 45%;
+        /* Slightly higher to center in the arch intuitively */
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 10;
@@ -130,99 +200,142 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
         padding: 0 20px;
       }
 
-      /* Fade out and gently pull back the logo/text before doors fully open */
       .split-loader.loaded .split-loader-content {
         opacity: 0;
-        transform: translate(-50%, -55%) scale(0.95);
-        filter: blur(4px);
+        transform: translate(-50%, -60%) scale(0.9);
+        filter: blur(8px);
       }
 
-      .golden-rings {
+      /* Modern Luxury Loader Concept */
+      .luxury-loader {
         position: relative;
-        width: 80px;
-        height: 80px;
-        margin: 0 auto 24px;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
-      .ring-outer {
-        position: absolute;
-        inset: 0;
-        border: 2px solid rgba(212, 175, 55, 0.2);
-        border-radius: 50%;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
-      }
-
-      .ring-inner {
-        position: absolute;
-        inset: 0;
-        border: 2px solid transparent;
-        border-top-color: #D4AF37;
-        border-left-color: #D4AF37;
-        border-radius: 50%;
-        animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-      }
-
-      .diamond-center {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(45deg);
-        width: 14px;
-        height: 14px;
+      .loader-diamond {
+        width: 20px;
+        height: 20px;
         background-color: #D4AF37;
-        animation: pulse 2s ease-in-out infinite;
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        transform: rotate(45deg);
+        animation: diamond-pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        z-index: 2;
+      }
+
+      .loader-line {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-top-color: #D4AF37;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .loader-line-1 {
+        animation: spin-luxury 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+      }
+
+      .loader-line-2 {
+        animation: spin-luxury 2.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
+        width: 80%;
+        height: 80%;
+      }
+
+      .loader-line-3 {
+        animation: spin-luxury 3s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        width: 120%;
+        height: 120%;
+        opacity: 0.5;
+      }
+
+      @keyframes diamond-pulse {
+
+        0%,
+        100% {
+          transform: rotate(45deg) scale(0.8);
+          opacity: 0.7;
+        }
+
+        50% {
+          transform: rotate(45deg) scale(1.2);
+          opacity: 1;
+          box-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
+        }
+      }
+
+      @keyframes spin-luxury {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+
+        50% {
+          transform: rotate(180deg) scale(1.05);
+        }
+
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
       }
 
       .loader-title {
         font-family: 'Playfair Display', serif;
         color: #D4AF37;
-        font-size: 32px;
-        letter-spacing: 0.2em;
+        font-size: 36px;
+        letter-spacing: 0.25em;
         margin: 0;
-        font-weight: 600;
+        font-weight: 500;
         text-transform: uppercase;
-        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        background: linear-gradient(to right, #D4AF37, #FFF, #D4AF37);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 3s infinite linear;
+        background-size: 200% auto;
       }
 
       .loader-subtitle {
         font-family: 'Tajawal', sans-serif;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 15px;
-        margin-top: 12px;
-        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 16px;
+        margin-top: 16px;
+        letter-spacing: 0.15em;
         font-weight: 300;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
       }
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-
-        100% {
-          transform: rotate(360deg);
+      @keyframes shimmer {
+        to {
+          background-position: 200% center;
         }
       }
 
-      @keyframes pulse {
+      /* Block interactions during loading */
+      html.is-loading {
+        overflow: hidden !important;
+        pointer-events: none;
+      }
 
-        0%,
-        100% {
-          transform: translate(-50%, -50%) rotate(45deg) scale(0.85);
-          opacity: 0.8;
-        }
+      /* Hide main root content initially so animations only trigger when visible */
+      html.is-loading #root {
+        opacity: 0;
+        transform: scale(0.98);
+      }
 
-        50% {
-          transform: translate(-50%, -50%) rotate(45deg) scale(1.15);
-          opacity: 1;
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
-        }
+      #root {
+        transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transform-origin: top center;
       }
     </style>
   </div>
@@ -232,18 +345,38 @@
 
   <!-- Script to trigger the cinematic split -->
   <script>
+    // Add loading class immediately to block scrolls & interactions
+    document.documentElement.classList.add('is-loading');
+
     window.addEventListener('load', function () {
       const loader = document.getElementById('global-loader');
+      const root = document.getElementById('root');
+
       if (loader) {
-        // A slight delay to let the user admire the loading screen before opening
+        // Wait slightly longer for dramatic effect
         setTimeout(() => {
+          // Trigger doors opening
           loader.classList.add('loaded');
-          // Remove from DOM after the transition duration (1.2s) + safe buffer
+
+          // Reveal the site content simultaneously
+          if (root) {
+            root.style.opacity = '1';
+            root.style.transform = 'scale(1)';
+          }
+
+          // Allow interactions again right after doors start moving
+          setTimeout(() => {
+            document.documentElement.classList.remove('is-loading');
+          }, 300);
+
+          // Remove the loader DOM node fully
           setTimeout(() => {
             loader.classList.add('hidden');
             loader.remove();
-          }, 1500);
-        }, 300);
+          }, 1800);
+        }, 800);
+      } else {
+        document.documentElement.classList.remove('is-loading');
       }
     });
   </script>
