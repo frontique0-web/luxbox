@@ -1,6 +1,6 @@
-import { app, initVercel } from '../dist/index.cjs';
+import { app, initVercel } from '../server';
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
     try {
         await initVercel();
         return app(req, res);
