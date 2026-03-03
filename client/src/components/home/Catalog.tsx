@@ -123,6 +123,7 @@ export default function Catalog() {
   const [activeSubCategoryId, setActiveSubCategoryId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const isSearching = debouncedSearch.length > 0;
   const { addToCart } = useCart();
   const productsRef = useRef<HTMLDivElement>(null);
@@ -176,6 +177,26 @@ export default function Catalog() {
     }
   }, [categories, activeCategoryId]);
 
+  // Auto-scroll categories container every 5 seconds (visual scroll only, no category change)
+  useEffect(() => {
+    if (!isAutoScrolling) return;
+
+    const intervalId = setInterval(() => {
+      const el = categoriesScrollRef.current;
+      if (!el) return;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (maxScroll <= 0) return; // no scroll needed
+      if (el.scrollLeft >= maxScroll - 10) {
+        // reset to start
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: 180, behavior: 'smooth' });
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [isAutoScrolling]);
+
 
 
   useEffect(() => {
@@ -197,9 +218,12 @@ export default function Catalog() {
   };
 
   const handleCategoryChange = (categoryId: number) => {
+    setIsAutoScrolling(false);
     setActiveCategoryId(categoryId);
     setActiveSubCategoryId(null);
     scrollToProducts();
+    // Resume auto-scroll after 8 seconds of inactivity
+    setTimeout(() => setIsAutoScrolling(true), 8000);
   };
 
   const handleSubcategoryChange = (subcategoryId: number) => {
@@ -263,10 +287,14 @@ export default function Catalog() {
 
         {!isSearching && (
           <div className="relative group/categories mb-12 w-full overflow-hidden">
-            {/* Desktop Layout (Hidden on mobile): No scroll, single row, compact */}
+            {/* Desktop Layout: horizontally scrollable row */}
             <div
-              className="hidden lg:flex py-4 items-center justify-center space-x-4 flex-nowrap w-full px-4"
+              ref={categoriesScrollRef}
+              className="hidden lg:flex py-6 items-center justify-start gap-6 flex-nowrap w-full px-8 overflow-x-auto scrollbar-hide"
               dir="ltr"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              onMouseEnter={() => setIsAutoScrolling(false)}
+              onMouseLeave={() => setIsAutoScrolling(true)}
             >
               {categories.map((cat, idx) => {
                 const bgImage = cat.imageUrl || CATEGORY_IMAGES[cat.slug] || "";
@@ -279,7 +307,7 @@ export default function Catalog() {
                     key={cat.id}
                     onClick={() => handleCategoryChange(cat.id)}
                     className={cn(
-                      "relative flex-shrink flex-grow-0 flex flex-col items-center justify-end w-[20%] max-w-[140px] aspect-[3/4] transition-all duration-300 overflow-hidden shadow-sm",
+                      "relative flex-shrink flex-grow-0 flex flex-col items-center justify-end w-[20%] max-w-[160px] aspect-[2/3] transition-all duration-300 overflow-hidden shadow-sm",
                       "rounded-2xl",
                       isActive
                         ? "ring-2 ring-[#0B281F] shadow-lg shadow-[#0B281F]/30 z-10 scale-105"
@@ -315,10 +343,18 @@ export default function Catalog() {
             </div>
 
             {/* Mobile Layout (Hidden on desktop): Original scrollable row */}
-            <div className="lg:hidden relative">
+            <div
+              className="lg:hidden relative"
+              onMouseEnter={() => setIsAutoScrolling(false)}
+              onMouseLeave={() => setIsAutoScrolling(true)}
+              onTouchStart={() => setIsAutoScrolling(false)}
+              onTouchEnd={() => setIsAutoScrolling(true)}
+            >
+
+
               <div
                 ref={categoriesScrollRef}
-                className="flex gap-4 overflow-x-auto pt-3 pb-4 snap-x snap-mandatory scrollbar-hide px-4"
+                className="flex gap-5 overflow-x-auto pt-3 pb-4 snap-x snap-mandatory scrollbar-hide px-5"
                 style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {categories.map((cat) => {
@@ -329,7 +365,7 @@ export default function Catalog() {
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.id)}
                       className={cn(
-                        "relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[140px] aspect-[2/3] transition-all duration-300 overflow-hidden shadow-sm",
+                        "relative flex-shrink-0 snap-center flex flex-col items-center justify-end w-[155px] aspect-[3/5] transition-all duration-300 overflow-hidden shadow-sm",
                         "rounded-xl",
                         isActive
                           ? "ring-2 ring-[#0B281F] shadow-lg shadow-[#0B281F]/30 z-10 scale-105"
@@ -363,6 +399,8 @@ export default function Catalog() {
                   );
                 })}
               </div>
+
+
             </div>
           </div>
         )}
@@ -470,50 +508,121 @@ export default function Catalog() {
               />
             ) : (
               <>
-                <div className="flex flex-wrap justify-center gap-3 lg:gap-4 mb-8 relative z-10">
-                  {subcategoriesLoading ? (
-                    Array.from({ length: 4 }).map((_, i) => (
-                      <Skeleton key={i} className="min-w-[120px] h-10 lg:h-12 rounded-full bg-gray-200" />
-                    ))
-                  ) : (
-                    <AnimatePresence mode="wait">
-                      {subcategories.length > 0 && (
-                        <motion.button
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          onClick={() => handleSubcategoryChange(null as any)}
-                          className={cn(
-                            "px-6 py-2 rounded-full border-2 transition-all duration-300 font-arabic text-sm lg:text-base font-medium min-w-[120px]",
-                            activeSubCategoryId === null
-                              ? "bg-[#0B281F] text-[#D4AF37] border-[#D4AF37] shadow-lg scale-105"
-                              : "bg-white text-gray-500 border-gray-200 hover:border-[#0B281F] hover:text-[#0B281F]"
-                          )}
+                {/* ── Luxury Inline Text Navigation ── */}
+                {(subcategoriesLoading || subcategories.length > 0) && (
+                  <div className="mb-14 relative z-10 w-full">
+
+                    {/* Decorative top rule */}
+                    <div className="flex items-center gap-4 mb-6 px-8 max-w-2xl mx-auto">
+                      <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3))' }} />
+                      <span className="text-[#D4AF37]/40 text-xs tracking-[0.3em] font-arabic">التصنيفات</span>
+                      <div className="flex-1 h-px" style={{ background: 'linear-gradient(270deg, transparent, rgba(212,175,55,0.3))' }} />
+                    </div>
+
+                    {subcategoriesLoading ? (
+                      <div className="flex justify-center gap-8">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <Skeleton key={i} className="h-6 w-24 bg-white/10 rounded" />
+                        ))}
+                      </div>
+                    ) : (
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={activeCategoryId}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="flex flex-wrap items-center justify-center gap-y-4"
+                          dir="rtl"
                         >
-                          الكل
-                        </motion.button>
-                      )}
-                      {subcategories.map((sub, idx) => (
-                        <motion.button
-                          key={`${activeCategoryId}-${sub.id}`}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ delay: idx * 0.05 }}
-                          onClick={() => handleSubcategoryChange(sub.id)}
-                          className={cn(
-                            "px-6 py-2 rounded-full border-2 transition-all duration-300 font-arabic text-sm lg:text-base font-medium min-w-[120px]",
-                            activeSubCategoryId === sub.id
-                              ? "bg-[#0B281F] text-[#D4AF37] border-[#D4AF37] shadow-lg scale-105"
-                              : "bg-white text-gray-500 border-gray-200 hover:border-[#0B281F] hover:text-[#0B281F]"
-                          )}
-                        >
-                          {sub.nameAr}
-                        </motion.button>
-                      ))}
-                    </AnimatePresence>
-                  )}
-                </div>
+                          {/* الكل */}
+                          {subcategories.length > 0 && (() => {
+                            const isAll = activeSubCategoryId === null;
+                            return (
+                              <div key="nav-all" className="flex items-center">
+                                <button
+                                  onClick={() => handleSubcategoryChange(null as any)}
+                                  className="relative px-5 py-1.5 group"
+                                >
+                                  <span
+                                    className="font-arabic font-bold transition-all duration-300 block"
+                                    style={{
+                                      fontSize: isAll ? '1rem' : '0.875rem',
+                                      color: isAll ? '#D4AF37' : 'rgba(255,255,255,0.45)',
+                                      letterSpacing: isAll ? '0.04em' : '0',
+                                    }}
+                                  >
+                                    الكل
+                                  </span>
+                                  {/* Animated gold underline */}
+                                  {isAll && (
+                                    <motion.div
+                                      layoutId="luxUnderline"
+                                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
+                                      transition={{ type: 'spring', stiffness: 350, damping: 32 }}
+                                      style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }}
+                                    />
+                                  )}
+                                </button>
+                                {/* Diamond separator */}
+                                <span className="text-[#D4AF37]/25 text-xs select-none px-1">◆</span>
+                              </div>
+                            );
+                          })()}
+
+                          {/* Individual subcategories */}
+                          {subcategories.map((sub, idx) => {
+                            const isActive = activeSubCategoryId === sub.id;
+                            const isLast = idx === subcategories.length - 1;
+                            return (
+                              <div key={`nav-${activeCategoryId}-${sub.id}`} className="flex items-center">
+                                <motion.button
+                                  initial={{ opacity: 0, y: 8 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: idx * 0.05, duration: 0.25 }}
+                                  onClick={() => handleSubcategoryChange(sub.id)}
+                                  className="relative px-5 py-1.5 group"
+                                >
+                                  <span
+                                    className="font-arabic font-bold transition-all duration-300 block"
+                                    style={{
+                                      fontSize: isActive ? '1rem' : '0.875rem',
+                                      color: isActive ? '#D4AF37' : 'rgba(255,255,255,0.45)',
+                                      letterSpacing: isActive ? '0.04em' : '0',
+                                    }}
+                                  >
+                                    {sub.nameAr}
+                                  </span>
+                                  {/* Animated gold underline */}
+                                  {isActive && (
+                                    <motion.div
+                                      layoutId="luxUnderline"
+                                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
+                                      transition={{ type: 'spring', stiffness: 350, damping: 32 }}
+                                      style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }}
+                                    />
+                                  )}
+                                </motion.button>
+                                {/* Diamond separator (not after last) */}
+                                {!isLast && (
+                                  <span className="text-[#D4AF37]/25 text-xs select-none px-1">◆</span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </motion.div>
+                      </AnimatePresence>
+                    )}
+
+                    {/* Decorative bottom rule */}
+                    <div className="flex items-center mt-6 px-8 max-w-2xl mx-auto">
+                      <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.15), transparent)' }} />
+                    </div>
+                  </div>
+                )}
+
+
 
 
 
@@ -607,3 +716,4 @@ export default function Catalog() {
     </section >
   );
 }
+
