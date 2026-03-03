@@ -12,8 +12,8 @@ export default function Hero() {
             transition={{ duration: 0.6 }}
             className="relative w-full rounded-2xl overflow-hidden aspect-[21/9] bg-[#0B281F] shadow-sm flex items-center"
           >
-            {/* Subtle background texture - removed mix-blend for mobile performance */}
-            <div className="absolute inset-0 bg-[url('/assets/marble-bg.png')] opacity-20"></div>
+            {/* Subtle background texture - extremely low opacity to preserve dark green brand color without mix-blend */}
+            <div className="absolute inset-0 bg-[url('/assets/marble-bg.png')] opacity-[0.05]"></div>
 
             <div className="flex w-full h-full items-center justify-between z-10 p-4 relative">
               {/* The small store front image */}
