@@ -17,8 +17,8 @@ import {
   products,
   admins,
   settings
-} from "../shared/schema";
-import { db } from "./db";
+} from "../shared/schema.js";
+import { db } from "./db.js";
 import { eq, and, or, ilike, count } from "drizzle-orm";
 
 export interface IStorage {

@@ -1,6 +1,6 @@
 import express from "express";
-import { autoSeed } from "../server/auto-seed";
-import { storage } from "../server/storage";
+import { autoSeed } from "../server/auto-seed.js";
+import { storage } from "../server/storage.js";
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
