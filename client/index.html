@@ -25,202 +25,300 @@
 </head>
 
 <body>
-  <!-- Global Loading Screen - Physical Shelf Design -->
-  <div id="global-loader" class="shelf-loader-bg">
-    <!-- Center Content: The Arch and Shelves -->
-    <div class="shelf-loader-container" id="loader-content">
-
-      <!-- Top "LUX BOX" Sign -->
-      <div class="shelf-sign">LUX BOX</div>
-
-      <!-- The Shelves inside the arch -->
-      <div class="shelf-rack">
-        <!-- Shelf 1 -->
-        <div class="shelf-row">
-          <div class="shelf-board"></div>
-        </div>
-        <!-- Shelf 2 -->
-        <div class="shelf-row">
-          <div class="shelf-board"></div>
-        </div>
-        <!-- Shelf 3 -->
-        <div class="shelf-row">
-          <div class="shelf-board"></div>
-        </div>
-        <!-- Shelf 4 -->
-        <div class="shelf-row">
-          <div class="shelf-board"></div>
-        </div>
-        <!-- Shelf 5 -->
-        <div class="shelf-row">
-          <div class="shelf-board"></div>
-        </div>
-      </div>
-
+  <!-- Global Loading Screen -->
+  <div id="global-loader" class="split-loader">
+    <!-- Left Door (Half of the shelf) -->
+    <!-- You can replace the background image below with your own shelf image -->
+    <div class="split-door split-door-left">
+      <div class="shelf-overlay"></div>
     </div>
 
-    <!-- The Left and Right Doors (used to wipe away the loader) -->
-    <div class="shelf-door shelf-door-left" id="door-left"></div>
-    <div class="shelf-door shelf-door-right" id="door-right"></div>
+    <!-- Right Door (Half of the shelf) -->
+    <div class="split-door split-door-right">
+      <div class="shelf-overlay"></div>
+    </div>
+
+    <!-- Center Content -->
+    <div class="split-loader-content" id="loader-content">
+      <div class="loader-logo-container">
+        <!-- Modern Luxurious Loader -->
+        <div class="luxury-loader">
+          <div class="loader-diamond"></div>
+          <div class="loader-line loader-line-1"></div>
+          <div class="loader-line loader-line-2"></div>
+          <div class="loader-line loader-line-3"></div>
+        </div>
+      </div>
+      <h1 class="loader-title">Lux Box</h1>
+      <p class="loader-subtitle" dir="rtl">بوابة الفخامة تفتح الآن...</p>
+    </div>
 
     <style>
-      /* Main Background outside the arch */
-      .shelf-loader-bg {
+      /* Base Loader Styles */
+      .split-loader {
         position: fixed;
         inset: 0;
         z-index: 9999;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f6f3f0;
-        /* Off-white wall color from image */
+        visibility: visible;
         overflow: hidden;
+        background-color: transparent;
       }
 
-      .shelf-loader-bg.hidden {
+      .split-loader.hidden {
         visibility: hidden;
-        transition: visibility 0s linear 1.2s;
+        transition: visibility 0s linear 1.8s;
       }
 
-      /* The Arch Container */
-      .shelf-loader-container {
-        position: relative;
-        width: 100%;
-        max-width: 500px;
-        height: 85vh;
-        background-color: #e6eee3;
-        /* Light green inside the arch */
-        border-top-left-radius: 250px;
-        border-top-right-radius: 250px;
-        box-shadow: inset 0 20px 40px rgba(0, 0, 0, 0.05);
+      /* Arch Container (The "Hole" in the wall) */
+      .arch-container {
+        position: absolute;
+        inset: 0;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-top: 60px;
-        /* Custom green ribbed border effect from the image */
-        border: 20px solid #235c3e;
-        /* Dark green */
-        border-bottom: none;
-        overflow: hidden;
-        z-index: 2;
-        transition: opacity 0.4s ease, transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
-      }
-
-      /* "LUX BOX" Gold Sign */
-      .shelf-sign {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 38px;
-        font-weight: 800;
-        color: #dcb348;
-        /* Gold color */
-        letter-spacing: 0.1em;
-        margin-bottom: 40px;
-        text-align: center;
-        /* 3D Gold Text Effect */
-        text-shadow:
-          0 1px 0 #b38b22,
-          0 2px 0 #b38b22,
-          0 3px 0 #b38b22,
-          0 4px 6px rgba(0, 0, 0, 0.4);
-        z-index: 10;
-        /* Pulse Animation to indicate loading */
-        animation: signPulse 2s infinite ease-in-out;
-      }
-
-      @keyframes signPulse {
-
-        0%,
-        100% {
-          filter: brightness(1);
-          text-shadow: 0 1px 0 #b38b22, 0 2px 0 #b38b22, 0 3px 0 #b38b22, 0 4px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        50% {
-          filter: brightness(1.2);
-          text-shadow: 0 1px 0 #b38b22, 0 2px 0 #b38b22, 0 3px 0 #b38b22, 0 4px 12px rgba(220, 179, 72, 0.6);
-        }
-      }
-
-      /* The Shelves Area */
-      .shelf-rack {
-        flex: 1;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        padding-bottom: 20px;
-      }
-
-      .shelf-row {
-        position: relative;
-        width: 90%;
-        margin: 0 auto;
-        height: 60px;
-        /* Space above shelf */
-        display: flex;
+        justify-content: center;
         align-items: flex-end;
+        /* Align arch from the bottom */
+        pointer-events: none;
+        z-index: 2;
       }
 
-      /* The actual solid green shelf */
-      .shelf-board {
+      /* The visible frame around the doors */
+      .arch-frame {
         width: 100%;
-        height: 14px;
-        background-color: #235c3e;
-        /* Dark green matching border */
-        border-radius: 4px;
+        max-width: 800px;
+        height: 90vh;
+        /* Don't go all the way to top to show the arch */
         position: relative;
-        /* Under-shelf lighting */
-        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.8), 0 10px 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        border-top-left-radius: 400px;
+        /* Perfect arch */
+        border-top-right-radius: 400px;
+        box-shadow: 0 0 0 100vmax #f3e8eb,
+          inset 0 15px 30px rgba(0, 0, 0, 0.2),
+          0 0 40px rgba(212, 175, 55, 0.15);
+        /* The wall and shadow inside arch */
       }
 
-      .shelf-board::after {
+      /* The Golden Rim around the arch */
+      .arch-frame::before {
         content: '';
         position: absolute;
-        bottom: -2px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.6);
-        border-radius: 0 0 4px 4px;
-        filter: blur(1px);
+        inset: 0;
+        border: 4px solid #D4AF37;
+        border-bottom: none;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+        pointer-events: none;
+        z-index: 5;
+        box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.3), 0 0 20px rgba(212, 175, 55, 0.3);
       }
 
-      /* Doors to wipe away the loader */
-      .shelf-door {
+      /* The actual doors that slide open */
+      .split-door {
         position: absolute;
         top: 0;
         width: 50vw;
+        /* Take full width of screen, the arch frame crops it */
         height: 100vh;
-        background-color: #f6f3f0;
-        /* Matches wall */
-        z-index: 5;
-        transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+        background-color: #0d3025;
+        /* Slightly lighter/richer green */
+        background-image:
+          linear-gradient(rgba(13, 48, 37, 0.85), rgba(7, 26, 20, 0.98)),
+          url('/assets/marble-bg.png');
+        background-size: 100vw 100vh;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        transition: transform 1.5s cubic-bezier(0.85, 0, 0.15, 1);
+        z-index: 1;
       }
 
-      .shelf-door-left {
+      .split-door-left {
         left: 0;
-        transform: translateX(-100%);
-        /* Start open (hidden), close to cover */
+        background-position: left center;
+        border-right: 2px solid #D4AF37;
+        box-shadow: inset -20px 0 50px rgba(0, 0, 0, 0.6);
       }
 
-      .shelf-door-right {
+      .split-door-right {
         right: 0;
+        background-position: right center;
+        border-left: 1px solid rgba(212, 175, 55, 0.3);
+        box-shadow: inset 20px 0 50px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Realistic 3D Shelves */
+      .shelf-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+          /* Top highlight */
+          repeating-linear-gradient(to bottom,
+            transparent 0%,
+            transparent 19%,
+            rgba(212, 175, 55, 0.4) 19.2%,
+            rgba(255, 255, 255, 0.1) 19.5%,
+
+            /* Shelf face (Green) */
+            #144535 19.8%,
+            #0B281F 21%,
+
+            /* Bottom shadow */
+            rgba(0, 0, 0, 0.8) 21.2%,
+            transparent 22%,
+            transparent 25%);
+        background-size: 100% 100vh;
+        pointer-events: none;
+      }
+
+      /* Add inner glow for depth */
+      .shelf-overlay::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+        mix-blend-mode: multiply;
+      }
+
+      /* Door Opening Animation */
+      .split-loader.loaded .split-door-left {
+        transform: translateX(-100%);
+      }
+
+      .split-loader.loaded .split-door-right {
         transform: translateX(100%);
       }
 
-      /* Animation classes */
-      .shelf-loader-bg.closing .shelf-door-left {
-        transform: translateX(0);
-        /* Cover screen */
+      /* Content Styling */
+      .split-loader-content {
+        position: absolute;
+        top: 45%;
+        /* Slightly higher to center in the arch intuitively */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        padding: 0 20px;
       }
 
-      .shelf-loader-bg.closing .shelf-door-right {
-        transform: translateX(0);
-      }
-
-      .shelf-loader-bg.closing .shelf-loader-container {
-        transform: scale(0.95) translateY(20px);
+      .split-loader.loaded .split-loader-content {
         opacity: 0;
+        transform: translate(-50%, -60%) scale(0.9);
+        filter: blur(8px);
+      }
+
+      /* Modern Luxury Loader Concept */
+      .luxury-loader {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .loader-diamond {
+        width: 20px;
+        height: 20px;
+        background-color: #D4AF37;
+        transform: rotate(45deg);
+        animation: diamond-pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        z-index: 2;
+      }
+
+      .loader-line {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-top-color: #D4AF37;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .loader-line-1 {
+        animation: spin-luxury 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+      }
+
+      .loader-line-2 {
+        animation: spin-luxury 2.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
+        width: 80%;
+        height: 80%;
+      }
+
+      .loader-line-3 {
+        animation: spin-luxury 3s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        width: 120%;
+        height: 120%;
+        opacity: 0.5;
+      }
+
+      @keyframes diamond-pulse {
+
+        0%,
+        100% {
+          transform: rotate(45deg) scale(0.8);
+          opacity: 0.7;
+        }
+
+        50% {
+          transform: rotate(45deg) scale(1.2);
+          opacity: 1;
+          box-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
+        }
+      }
+
+      @keyframes spin-luxury {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+
+        50% {
+          transform: rotate(180deg) scale(1.05);
+        }
+
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
+      }
+
+      .loader-title {
+        font-family: 'Playfair Display', serif;
+        color: #D4AF37;
+        font-size: 36px;
+        letter-spacing: 0.25em;
+        margin: 0;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        background: linear-gradient(to right, #D4AF37, #FFF, #D4AF37);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 3s infinite linear;
+        background-size: 200% auto;
+      }
+
+      .loader-subtitle {
+        font-family: 'Tajawal', sans-serif;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 16px;
+        margin-top: 16px;
+        letter-spacing: 0.15em;
+        font-weight: 300;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+      }
+
+      @keyframes shimmer {
+        to {
+          background-position: 200% center;
+        }
       }
     </style>
   </div>
@@ -228,22 +326,22 @@
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Script to trigger the cinematic shelf split -->
+  <!-- Script to trigger the cinematic split -->
   <script>
     window.addEventListener('load', function () {
       const loader = document.getElementById('global-loader');
 
       if (loader) {
-        // Wait a bit so user sees the shelf design
+        // Wait slightly longer for dramatic effect
         setTimeout(() => {
-          // Trigger doors wiping inwards to cover the shelf
-          loader.classList.add('closing');
+          // Trigger doors opening
+          loader.classList.add('loaded');
 
-          // Once doors are closed, hide the loader fully
+          // Remove the loader DOM node fully
           setTimeout(() => {
             loader.classList.add('hidden');
             loader.remove();
-          }, 1200);
+          }, 1800);
         }, 800);
       }
     });
