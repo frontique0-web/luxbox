@@ -320,23 +320,6 @@
           background-position: 200% center;
         }
       }
-
-      /* Block interactions during loading */
-      html.is-loading {
-        overflow: hidden !important;
-        pointer-events: none;
-      }
-
-      /* Hide main root content initially so animations only trigger when visible */
-      html.is-loading #root {
-        opacity: 0;
-        transform: scale(0.98);
-      }
-
-      #root {
-        transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        transform-origin: top center;
-      }
     </style>
   </div>
 
@@ -345,12 +328,8 @@
 
   <!-- Script to trigger the cinematic split -->
   <script>
-    // Add loading class immediately to block scrolls & interactions
-    document.documentElement.classList.add('is-loading');
-
     window.addEventListener('load', function () {
       const loader = document.getElementById('global-loader');
-      const root = document.getElementById('root');
 
       if (loader) {
         // Wait slightly longer for dramatic effect
@@ -358,25 +337,12 @@
           // Trigger doors opening
           loader.classList.add('loaded');
 
-          // Reveal the site content simultaneously
-          if (root) {
-            root.style.opacity = '1';
-            root.style.transform = 'scale(1)';
-          }
-
-          // Allow interactions again right after doors start moving
-          setTimeout(() => {
-            document.documentElement.classList.remove('is-loading');
-          }, 300);
-
           // Remove the loader DOM node fully
           setTimeout(() => {
             loader.classList.add('hidden');
             loader.remove();
           }, 1800);
         }, 800);
-      } else {
-        document.documentElement.classList.remove('is-loading');
       }
     });
   </script>
