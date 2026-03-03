@@ -18,6 +18,16 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/seed-test", async (req, res) => {
+    try {
+      const { autoSeed } = await import("./auto-seed");
+      await autoSeed();
+      res.json({ success: true, message: "Seed endpoint executed successfully" });
+    } catch (e: any) {
+      res.status(500).json({ success: false, error: e.message, stack: e.stack });
+    }
+  });
+
   // Get subcategories by category ID
   app.get("/api/categories/:categoryId/subcategories", async (req, res) => {
     try {
