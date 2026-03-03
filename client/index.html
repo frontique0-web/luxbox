@@ -26,16 +26,7 @@
 
 <body>
   <div id="global-loader">
-    <div id="lux-loading-overlay">
-      <div class="lux-logo-container">
-        <!-- Optional: Replace with actual logo image later if desired -->
-        <h1 class="lux-loading-logo-text">LUX BOX</h1>
-      </div>
-      <div class="lux-progress-container">
-        <div class="lux-progress-bar"></div>
-      </div>
-      <div class="lux-loading-text">جاري تحميل المعرض...</div>
-    </div>
+    <!-- Content injected via JS below for the 40-panel transition -->
   </div>
 
   <style>
@@ -43,27 +34,78 @@
     body {
       margin: 0;
       background-color: #061811;
-      /* Match the dark theme background */
+      overflow: hidden;
+      /* Prevent scrollbar during generation */
     }
 
     #global-loader {
       position: fixed;
       inset: 0;
       z-index: 99999;
+      background: transparent;
+      pointer-events: all;
+    }
+
+    #global-loader.hidden {
+      visibility: hidden;
+      transition: visibility 0s linear 2s;
+    }
+
+    /* 40 Pieces of the Loading Screen (20 Rows x 2 Cols) */
+    .piece {
+      position: absolute;
+      width: 50.5vw;
+      height: 5.5vh;
+      overflow: hidden;
+      /* Slow, cinematic ease-in-out */
+      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+    }
+
+    /* Col positions */
+    .piece-c1 {
+      left: 0;
+    }
+
+    .piece-c2 {
+      left: 50vw;
+    }
+
+    /* Shifts for the decor wrapper inside each piece to perfectly align the single design */
+    .decor-wrapper {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .piece-c1 .decor-wrapper {
+      left: 0;
+    }
+
+    .piece-c2 .decor-wrapper {
+      left: -50vw;
+    }
+
+    /* Loaded transforms - moving panels out of view */
+    /* Only 2 columns - left moves left, right moves right */
+    #global-loader.loaded .piece-c1 {
+      transform: translateX(-100%);
+    }
+
+    #global-loader.loaded .piece-c2 {
+      transform: translateX(100%);
+    }
+
+    /* The actual design inside the wrapper */
+    .decor-wall {
+      width: 100vw;
+      height: 100vh;
       background: radial-gradient(circle at center, #0B2A1E 0%, #061811 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 1.2s cubic-bezier(0.85, 0, 0.15, 1), transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
-      transform-origin: top center;
-    }
-
-    #global-loader.hidden {
-      opacity: 0;
-      transform: scale(1.05);
-      /* Slight zoom out effect on leaving */
-      pointer-events: none;
+      /* Adding a tiny bit of shadow at the cut seams */
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
     }
 
     #lux-loading-overlay {
@@ -78,23 +120,44 @@
       padding: 0 20px;
     }
 
-    .lux-logo-container {
+    .lux-brand-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
       margin-bottom: 40px;
-      text-align: center;
+      animation: lux-float 4s ease-in-out infinite;
     }
 
-    .lux-loading-logo-text {
-      font-size: 42px;
-      font-weight: 800;
-      letter-spacing: 8px;
-      margin: 0;
-      text-transform: uppercase;
+    /* Using actual logos with gold gradient masks */
+    .lux-brand-icon {
+      width: 50px;
+      height: 50px;
       background: linear-gradient(to bottom, #f9e1b2 0%, #d5ae60 40%, #a67c00 50%, #d5ae60 60%, #fff6d9 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-mask-image: url('/logo.png');
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-image: url('/logo.png');
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
       filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
-      animation: lux-float 4s ease-in-out infinite;
+    }
+
+    .lux-brand-text {
+      width: 160px;
+      height: 36px;
+      background: linear-gradient(to bottom, #f9e1b2 0%, #d5ae60 40%, #a67c00 50%, #d5ae60 60%, #fff6d9 100%);
+      -webkit-mask-image: url('/logo-text.png');
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-image: url('/logo-text.png');
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
     }
 
     /* Minimalist Loading Text */
@@ -174,21 +237,77 @@
   <script type="module" src="/src/main.tsx"></script>
 
   <script>
-    // Define a global function for React to call when ready
-    window.hideLuxLoader = function () {
-      const loader = document.getElementById('global-loader');
-      if (loader) {
-        loader.classList.add('hidden');
-        setTimeout(() => {
-          loader.remove();
-        }, 1500); // Wait for transition to finish
-      }
-    };
+    (function () {
+      // HTML template for the clean background wall that holds the logo and progress bar
+      const designHTML = `
+        <div class="decor-wrapper">
+          <div class="decor-wall">
+            <div id="lux-loading-overlay">
+              <div class="lux-brand-wrapper">
+                <div class="lux-brand-icon"></div>
+                <div class="lux-brand-text"></div>
+              </div>
+              <div class="lux-progress-container">
+                <div class="lux-progress-bar"></div>
+              </div>
+              <div class="lux-loading-text">جاري تحميل المعرض...</div>
+            </div>
+          </div>
+        </div>
+      `;
 
-    // Fallback: If React fails to load within 12 seconds, hide it anyway
-    setTimeout(() => {
-      window.hideLuxLoader();
-    }, 12000);
+      const loaderContainer = document.getElementById('global-loader');
+
+      if (loaderContainer) {
+        // Generate dynamic CSS for 20 rows
+        let dynCss = '';
+        const rows = 20;
+        for (let r = 1; r <= rows; r++) {
+          let topOffset = (r - 1) * 5;
+          dynCss += `.piece-r${r} { top: ${topOffset}vh !important; }\n`;
+          dynCss += `.piece-r${r} .decor-wrapper { top: -${topOffset}vh !important; }\n`;
+
+          // Cinematic ripple delay: from center outwards
+          let center1 = rows / 2;
+          let center2 = (rows / 2) + 1;
+          let distance = Math.min(Math.abs(r - center1), Math.abs(r - center2));
+          let delay = distance * 0.04;
+          dynCss += `#global-loader.loaded .piece-r${r} { transition-delay: ${delay.toFixed(2)}s !important; }\n`;
+        }
+        const styleEl = document.createElement('style');
+        styleEl.innerHTML = dynCss;
+        loaderContainer.appendChild(styleEl);
+
+        // Generate the 40 grid pieces flawlessly
+        for (let r = 1; r <= rows; r++) {
+          for (let c = 1; c <= 2; c++) {
+            const piece = document.createElement('div');
+            piece.className = 'piece piece-r' + r + ' piece-c' + c;
+            piece.innerHTML = designHTML;
+            loaderContainer.appendChild(piece);
+          }
+        }
+
+        // Define a global function for React to call when ready
+        window.hideLuxLoader = function () {
+          if (loaderContainer.classList.contains('loaded')) return;
+
+          loaderContainer.classList.add('loaded');
+
+          // Longest delay is (10 * 0.04s) = 0.4s. Plus 1.2s animation = 1.6s
+          setTimeout(() => {
+            loaderContainer.classList.add('hidden');
+            loaderContainer.remove();
+            document.body.style.overflow = ''; // Restore body scrolling
+          }, 1800);
+        };
+
+        // Fallback: If React fails to load within 12 seconds
+        setTimeout(() => {
+          if (window.hideLuxLoader) window.hideLuxLoader();
+        }, 12000);
+      }
+    })();
   </script>
 </body>
 
