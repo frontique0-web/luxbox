@@ -2,15 +2,20 @@ import { db } from "./db";
 import { categories, subcategories, products } from "@shared/schema";
 import { sql } from "drizzle-orm";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
+import path from "path";
 
 export async function autoSeed() {
   try {
     console.log("Checking database schema and migrations...");
     try {
-      await migrate(db, { migrationsFolder: "./migrations" });
+      const migrationPath = path.join(process.cwd(), "migrations");
+      console.log(`Applying migrations from: ${migrationPath}`);
+      await migrate(db, { migrationsFolder: migrationPath });
       console.log("✅ Database generic migrations verified/applied.");
     } catch (migErr: any) {
-      console.warn("⚠️ Migration warning (might be already applied):", migErr.message);
+      console.warn("⚠️ Migration warning:", migErr.message);
+      // Wait, let's also try to push schema directly if migrate fails and we are in a tight spot?
+      // Drizzle doesn't support runtime push easily without kit.
     }
 
     const result = await db.select({ count: sql<number>`count(*)` }).from(categories);
