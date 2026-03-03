@@ -17,7 +17,7 @@ import {
   products,
   admins,
   settings
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, and, or, ilike, count } from "drizzle-orm";
 

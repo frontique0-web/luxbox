@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { categories, subcategories, products } from "@shared/schema";
+import { categories, subcategories, products } from "../shared/schema";
 import { sql } from "drizzle-orm";
 import path from "path";
 
