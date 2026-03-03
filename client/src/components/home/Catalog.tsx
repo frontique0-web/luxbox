@@ -233,6 +233,15 @@ export default function Catalog() {
   const activeCategory = categories.find(c => c.id === activeCategoryId);
   const isVapeCategory = activeCategory?.slug === "vape";
 
+  // Hide the global loading screen only when initial data is ready
+  useEffect(() => {
+    if (!categoriesLoading && categories.length > 0 && !productsLoading) {
+      if (typeof window !== "undefined" && (window as any).hideLuxLoader) {
+        (window as any).hideLuxLoader();
+      }
+    }
+  }, [categoriesLoading, productsLoading, categories.length]);
+
   if (categoriesLoading) {
     return (
       <section className="py-24 bg-white flex flex-col items-center justify-center min-h-screen relative" style={{ backgroundImage: "url('/assets/marble-bg.png')" }}>
