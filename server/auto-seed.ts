@@ -1,9 +1,18 @@
 import { db } from "./db";
 import { categories, subcategories, products } from "@shared/schema";
 import { sql } from "drizzle-orm";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 
 export async function autoSeed() {
   try {
+    console.log("Checking database schema and migrations...");
+    try {
+      await migrate(db, { migrationsFolder: "./migrations" });
+      console.log("✅ Database generic migrations verified/applied.");
+    } catch (migErr: any) {
+      console.warn("⚠️ Migration warning (might be already applied):", migErr.message);
+    }
+
     const result = await db.select({ count: sql<number>`count(*)` }).from(categories);
     const count = Number(result[0]?.count ?? 0);
 

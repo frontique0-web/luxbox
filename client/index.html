@@ -625,7 +625,7 @@
         }
 
         window.addEventListener('load', function () {
-          // Give user 1.5s to appreciate the intricate 3D CSS rendering
+          // Give user a short 0.2s pause for visual cue before opening
           setTimeout(() => {
             loaderContainer.classList.add('loaded');
             // Longest delay (0.75s) + animation (1.2s) = 1.95s
@@ -634,7 +634,7 @@
               loaderContainer.classList.add('hidden');
               loaderContainer.remove();
             }, 2100);
-          }, 1500);
+          }, 200);
         });
       }
     })();
