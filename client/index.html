@@ -25,174 +25,200 @@
 </head>
 
 <body>
-  <!-- Global Loading Screen -->
-  <div id="global-loader" class="split-loader">
-    <!-- Left Door (Half of the shelf) -->
-    <!-- You can replace the background image below with your own shelf image -->
-    <div class="split-door split-door-left">
-      <div class="shelf-overlay"></div>
+  <!-- Global Loading Screen - 10-Panel Pure CSS Cinematic Animation -->
+  <div id="global-loader" class="multi-panel-loader">
+
+    <!-- 10 Panels (5 Rows x 2 Columns) -->
+    <!-- Row 1 -->
+    <div class="panel panel-left row-1">
+      <div class="panel-inner"></div>
+    </div>
+    <div class="panel panel-right row-1">
+      <div class="panel-inner"></div>
     </div>
 
-    <!-- Right Door (Half of the shelf) -->
-    <div class="split-door split-door-right">
-      <div class="shelf-overlay"></div>
+    <!-- Row 2 -->
+    <div class="panel panel-left row-2">
+      <div class="panel-inner"></div>
+    </div>
+    <div class="panel panel-right row-2">
+      <div class="panel-inner"></div>
     </div>
 
-    <!-- Center Content -->
-    <div class="split-loader-content" id="loader-content">
+    <!-- Row 3 (Center) -->
+    <div class="panel panel-left row-3">
+      <div class="panel-inner"></div>
+    </div>
+    <div class="panel panel-right row-3">
+      <div class="panel-inner"></div>
+    </div>
+
+    <!-- Row 4 -->
+    <div class="panel panel-left row-4">
+      <div class="panel-inner"></div>
+    </div>
+    <div class="panel panel-right row-4">
+      <div class="panel-inner"></div>
+    </div>
+
+    <!-- Row 5 -->
+    <div class="panel panel-left row-5">
+      <div class="panel-inner"></div>
+    </div>
+    <div class="panel panel-right row-5">
+      <div class="panel-inner"></div>
+    </div>
+
+    <!-- Center Content: Logo and LUX BOX sign overlay -->
+    <div class="panel-loader-content" id="loader-content">
       <div class="loader-logo-container">
-        <!-- Modern Luxurious Loader -->
-        <div class="luxury-loader">
-          <div class="loader-diamond"></div>
-          <div class="loader-line loader-line-1"></div>
-          <div class="loader-line loader-line-2"></div>
-          <div class="loader-line loader-line-3"></div>
+        <!-- Gold pulsing ring for realistic luxury feel -->
+        <div class="golden-rings">
+          <div class="ring-outer"></div>
+          <div class="ring-inner"></div>
+          <div class="diamond-center"></div>
         </div>
       </div>
-      <h1 class="loader-title">Lux Box</h1>
+      <h1 class="loader-title">LUX BOX</h1>
       <p class="loader-subtitle" dir="rtl">بوابة الفخامة تفتح الآن...</p>
     </div>
 
     <style>
-      /* Base Loader Styles */
-      .split-loader {
+      /* Main Background Container */
+      .multi-panel-loader {
         position: fixed;
         inset: 0;
         z-index: 9999;
-        display: flex;
-        visibility: visible;
         overflow: hidden;
-        background-color: transparent;
+        background-color: #030806;
+        /* Dark void behind the doors */
       }
 
-      .split-loader.hidden {
+      .multi-panel-loader.hidden {
         visibility: hidden;
-        transition: visibility 0s linear 1.8s;
+        transition: visibility 0s linear 2.5s;
       }
 
-      /* Arch Container (The "Hole" in the wall) */
-      .arch-container {
+      /* Base style for the 10 door panels */
+      .panel {
         position: absolute;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        /* Align arch from the bottom */
-        pointer-events: none;
-        z-index: 2;
-      }
-
-      /* The visible frame around the doors */
-      .arch-frame {
-        width: 100%;
-        max-width: 800px;
-        height: 90vh;
-        /* Don't go all the way to top to show the arch */
-        position: relative;
-        overflow: hidden;
-        border-top-left-radius: 400px;
-        /* Perfect arch */
-        border-top-right-radius: 400px;
-        box-shadow: 0 0 0 100vmax #f3e8eb,
-          inset 0 15px 30px rgba(0, 0, 0, 0.2),
-          0 0 40px rgba(212, 175, 55, 0.15);
-        /* The wall and shadow inside arch */
-      }
-
-      /* The Golden Rim around the arch */
-      .arch-frame::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border: 4px solid #D4AF37;
-        border-bottom: none;
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
-        pointer-events: none;
-        z-index: 5;
-        box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.3), 0 0 20px rgba(212, 175, 55, 0.3);
-      }
-
-      /* The actual doors that slide open */
-      .split-door {
-        position: absolute;
-        top: 0;
         width: 50vw;
-        /* Take full width of screen, the arch frame crops it */
-        height: 100vh;
-        background-color: #0d3025;
-        /* Slightly lighter/richer green */
+        height: 20vh;
+        background-color: #0b281f;
+        /* Base luxury green */
+        /* Elegant CSS gradients to simulate premium painted wood/metal */
         background-image:
-          linear-gradient(rgba(13, 48, 37, 0.85), rgba(7, 26, 20, 0.98)),
-          url('/assets/marble-bg.png');
-        background-size: 100vw 100vh;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        transition: transform 1.5s cubic-bezier(0.85, 0, 0.15, 1);
+          linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0.5) 100%),
+          linear-gradient(to bottom, #0d3025 0%, #05140f 100%);
+        box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
         z-index: 1;
       }
 
-      .split-door-left {
-        left: 0;
-        background-position: left center;
-        border-right: 2px solid #D4AF37;
-        box-shadow: inset -20px 0 50px rgba(0, 0, 0, 0.6);
-      }
-
-      .split-door-right {
-        right: 0;
-        background-position: right center;
-        border-left: 1px solid rgba(212, 175, 55, 0.3);
-        box-shadow: inset 20px 0 50px rgba(0, 0, 0, 0.6);
-      }
-
-      /* Realistic 3D Shelves */
-      .shelf-overlay {
+      /* Pure CSS Decoration - Gold framing inside each panel */
+      .panel-inner {
         position: absolute;
-        inset: 0;
-        background:
-          /* Top highlight */
-          repeating-linear-gradient(to bottom,
-            transparent 0%,
-            transparent 19%,
-            rgba(212, 175, 55, 0.4) 19.2%,
-            rgba(255, 255, 255, 0.1) 19.5%,
-
-            /* Shelf face (Green) */
-            #144535 19.8%,
-            #0B281F 21%,
-
-            /* Bottom shadow */
-            rgba(0, 0, 0, 0.8) 21.2%,
-            transparent 22%,
-            transparent 25%);
-        background-size: 100% 100vh;
-        pointer-events: none;
+        inset: 12px 24px;
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        box-shadow:
+          inset 0 0 15px rgba(0, 0, 0, 0.6),
+          0 0 5px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%, rgba(0, 0, 0, 0.2) 100%);
+        border-radius: 2px;
       }
 
-      /* Add inner glow for depth */
-      .shelf-overlay::after {
+      /* Highlight effect for the pure CSS decoration to add depth */
+      .panel-inner::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
-        mix-blend-mode: multiply;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 1px solid rgba(255, 255, 255, 0.03);
+        pointer-events: none;
       }
 
-      /* Door Opening Animation */
-      .split-loader.loaded .split-door-left {
+      /* Left and Right column specifics */
+      .panel-left {
+        left: 0;
+        border-right: 2px solid rgba(212, 175, 55, 0.5);
+      }
+
+      .panel-right {
+        right: 0;
+        border-left: 2px solid rgba(212, 175, 55, 0.2);
+      }
+
+      /* Open gap so the inner frames look continuous horizontally */
+      .panel-left .panel-inner {
+        right: 0;
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .panel-right .panel-inner {
+        left: 0;
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      /* Positioning the 5 Rows */
+      .row-1 {
+        top: 0;
+        border-top: none;
+      }
+
+      .row-2 {
+        top: 20vh;
+      }
+
+      .row-3 {
+        top: 40vh;
+      }
+
+      .row-4 {
+        top: 60vh;
+      }
+
+      .row-5 {
+        top: 80vh;
+        border-bottom: none;
+      }
+
+      /* --- Animation Sequence --- */
+      /* Middle row opens first */
+      .multi-panel-loader.loaded .row-3 {
+        transition-delay: 0.1s;
+      }
+
+      /* Rows 2 and 4 open second */
+      .multi-panel-loader.loaded .row-2,
+      .multi-panel-loader.loaded .row-4 {
+        transition-delay: 0.35s;
+      }
+
+      /* Rows 1 and 5 open last */
+      .multi-panel-loader.loaded .row-1,
+      .multi-panel-loader.loaded .row-5 {
+        transition-delay: 0.6s;
+      }
+
+      /* The Opening Translations */
+      .multi-panel-loader.loaded .panel-left {
         transform: translateX(-100%);
       }
 
-      .split-loader.loaded .split-door-right {
+      .multi-panel-loader.loaded .panel-right {
         transform: translateX(100%);
       }
 
-      /* Content Styling */
-      .split-loader-content {
+      /* Center Content Overlay */
+      .panel-loader-content {
         position: absolute;
-        top: 45%;
-        /* Slightly higher to center in the arch intuitively */
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 10;
@@ -200,119 +226,108 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
         padding: 0 20px;
+        filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.9));
       }
 
-      .split-loader.loaded .split-loader-content {
+      /* Logo and text fade out slightly before the panel animations start */
+      .multi-panel-loader.loaded .panel-loader-content {
         opacity: 0;
-        transform: translate(-50%, -60%) scale(0.9);
+        transform: translate(-50%, -55%) scale(0.9);
         filter: blur(8px);
       }
 
-      /* Modern Luxury Loader Concept */
-      .luxury-loader {
+      /* Modern Gold Rings */
+      .golden-rings {
         position: relative;
-        width: 60px;
-        height: 60px;
-        margin: 0 auto 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
       }
 
-      .loader-diamond {
-        width: 20px;
-        height: 20px;
-        background-color: #D4AF37;
-        transform: rotate(45deg);
-        animation: diamond-pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-        z-index: 2;
-      }
-
-      .loader-line {
+      .ring-outer {
         position: absolute;
-        width: 100%;
-        height: 100%;
-        border: 1px solid rgba(212, 175, 55, 0.1);
-        border-top-color: #D4AF37;
+        inset: 0;
+        border: 2px solid rgba(212, 175, 55, 0.15);
         border-radius: 50%;
-        z-index: 1;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
       }
 
-      .loader-line-1 {
-        animation: spin-luxury 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+      .ring-inner {
+        position: absolute;
+        inset: 0;
+        border: 2px solid transparent;
+        border-top-color: #D4AF37;
+        border-left-color: #D4AF37;
+        border-radius: 50%;
+        animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
       }
 
-      .loader-line-2 {
-        animation: spin-luxury 2.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
-        width: 80%;
-        height: 80%;
+      .diamond-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        width: 16px;
+        height: 16px;
+        background-color: #D4AF37;
+        animation: diamond-pulse 2s ease-in-out infinite;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
       }
 
-      .loader-line-3 {
-        animation: spin-luxury 3s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-        width: 120%;
-        height: 120%;
-        opacity: 0.5;
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       @keyframes diamond-pulse {
 
         0%,
         100% {
-          transform: rotate(45deg) scale(0.8);
-          opacity: 0.7;
+          transform: translate(-50%, -50%) rotate(45deg) scale(0.85);
+          opacity: 0.8;
         }
 
         50% {
-          transform: rotate(45deg) scale(1.2);
+          transform: translate(-50%, -50%) rotate(45deg) scale(1.15);
           opacity: 1;
-          box-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
+          box-shadow: 0 0 25px rgba(212, 175, 55, 1);
         }
       }
 
-      @keyframes spin-luxury {
-        0% {
-          transform: rotate(0deg) scale(1);
-        }
-
-        50% {
-          transform: rotate(180deg) scale(1.05);
-        }
-
-        100% {
-          transform: rotate(360deg) scale(1);
-        }
-      }
-
+      /* LUX BOX GOLD SIGN */
       .loader-title {
         font-family: 'Playfair Display', serif;
-        color: #D4AF37;
-        font-size: 36px;
+        font-size: 38px;
+        font-weight: 600;
+        color: #dcb348;
         letter-spacing: 0.25em;
         margin: 0;
-        font-weight: 500;
         text-transform: uppercase;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-        background: linear-gradient(to right, #D4AF37, #FFF, #D4AF37);
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+        animation: shimmer 3s infinite linear;
+        background: linear-gradient(to right, #dcb348, #FFF, #dcb348);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: shimmer 3s infinite linear;
         background-size: 200% auto;
       }
 
       .loader-subtitle {
         font-family: 'Tajawal', sans-serif;
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(255, 255, 255, 0.8);
         font-size: 16px;
-        margin-top: 16px;
         letter-spacing: 0.15em;
         font-weight: 300;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        margin-top: 16px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
       }
 
       @keyframes shimmer {
@@ -326,23 +341,23 @@
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Script to trigger the cinematic split -->
+  <!-- Script to trigger the 10-panel cinematic split -->
   <script>
     window.addEventListener('load', function () {
       const loader = document.getElementById('global-loader');
 
       if (loader) {
-        // Wait slightly longer for dramatic effect
+        // Wait slightly longer for dramatic effect so user sees the CSS design
         setTimeout(() => {
-          // Trigger doors opening
+          // Trigger the sequence opening
           loader.classList.add('loaded');
 
-          // Remove the loader DOM node fully
+          // Wait until the longest animation finishes (0.6s delay + 1.2s duration = 1.8s)
           setTimeout(() => {
             loader.classList.add('hidden');
             loader.remove();
-          }, 1800);
-        }, 800);
+          }, 2000);
+        }, 1200);
       }
     });
   </script>
