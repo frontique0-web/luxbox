@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAdminAuth } from "@/hooks/use-admin-auth";
 import { LayoutDashboard, Tag, Package, Settings, LogOut, Store, Menu, Bookmark } from "lucide-react";
@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [location] = useLocation();
     const { logout, user } = useAdminAuth();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         if (typeof window !== "undefined" && (window as any).hideLuxLoader) {
@@ -23,11 +24,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: "الإعدادات", href: "/admin/settings", icon: Settings },
     ];
 
-    const SidebarContent = () => (
+    const SidebarContent = ({ onClose }: { onClose?: () => void }) => (
         <>
             <div className="p-6 flex items-center justify-between md:justify-center border-b border-white/10">
                 <Link href="/admin">
-                    <a className="flex items-center gap-3 group cursor-pointer">
+                    <a onClick={() => onClose && onClose()} className="flex items-center gap-3 group cursor-pointer">
                         <div className="bg-[#D4AF37] p-2 rounded-lg group-hover:scale-110 transition-transform">
                             <Store className="w-5 h-5 text-[#0B281F]" />
                         </div>
@@ -45,6 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     return (
                         <Link key={item.name} href={item.href}>
                             <a
+                                onClick={() => onClose && onClose()}
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl font-arabic font-medium transition-all duration-300",
                                     isActive
@@ -72,7 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
                 <Button
                     variant="ghost"
-                    onClick={logout}
+                    onClick={() => { logout(); onClose && onClose(); }}
                     className="w-full justify-start gap-3 text-red-300 hover:text-red-400 hover:bg-red-400/10 font-arabic"
                 >
                     <LogOut className="w-5 h-5" />
@@ -83,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
 
     return (
-        <div className="min-h-screen bg-gray-50/50 flex flex-col md:flex-row" dir="rtl">
+        <div className="min-h-screen bg-white flex flex-col md:flex-row" dir="rtl">
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between bg-[#0B281F] text-white p-4 sticky top-0 z-30 shadow-md">
                 <Link href="/admin">
@@ -96,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </span>
                     </a>
                 </Link>
-                <Sheet>
+                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
                             <Menu className="w-6 h-6" />
@@ -104,7 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[80vw] sm:w-[350px] p-0 bg-[#0B281F] text-white border-l-0" dir="rtl">
                         <div className="flex flex-col h-full pt-6">
-                            <SidebarContent />
+                            <SidebarContent onClose={() => setIsMobileMenuOpen(false)} />
                         </div>
                     </SheetContent>
                 </Sheet>

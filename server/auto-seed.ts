@@ -89,9 +89,13 @@ export async function autoSeed() {
         console.log("No admin found, creating default admin user...");
         await db.insert(admins).values({
           username: 'admin',
-          password: process.env.ADMIN_PASSWORD || 'admin'
+          password: process.env.ADMIN_PASSWORD || 'lux112233@'
         });
         console.log("Default admin created successfully!");
+      } else {
+        // Force update existing admin password to lux112233@ just in case
+        await db.update(admins).set({ password: 'lux112233@' }).where(sql`username = 'admin'`);
+        console.log("Forced admin password update to lux112233@");
       }
     } catch (adminErr: any) {
       console.warn("⚠️ Failed to check/create admin user:", adminErr.message);
