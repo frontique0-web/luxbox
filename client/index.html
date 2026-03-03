@@ -25,7 +25,7 @@
 </head>
 
 <body>
-  <!-- Global Loading Screen - Pure CSS Decor (Arched Cabinet) -->
+  <!-- Global Loading Screen - 3D Pure CSS Decor (Arched Cabinet) -->
   <div id="global-loader"></div>
 
   <style>
@@ -39,19 +39,18 @@
       inset: 0;
       z-index: 9999;
       background: transparent;
-      /* No black background */
     }
 
     #global-loader.hidden {
       visibility: hidden;
-      transition: visibility 0s linear 3s;
+      transition: visibility 0s linear 3.5s;
     }
 
-    /* 10 Pieces of the Loading Screen */
+    /* 18 Pieces of the Loading Screen (6 Rows x 3 Cols) */
     .piece {
       position: absolute;
-      width: 50vw;
-      height: 20vh;
+      width: 33.334vw;
+      height: 16.667vh;
       overflow: hidden;
       /* Slow, cinematic ease-in-out */
       transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
@@ -63,7 +62,11 @@
     }
 
     .piece-c2 {
-      left: 50vw;
+      left: 33.333vw;
+    }
+
+    .piece-c3 {
+      left: 66.666vw;
     }
 
     /* Row positions */
@@ -72,19 +75,23 @@
     }
 
     .piece-r2 {
-      top: 20vh;
+      top: 16.666vh;
     }
 
     .piece-r3 {
-      top: 40vh;
+      top: 33.333vh;
     }
 
     .piece-r4 {
-      top: 60vh;
+      top: 50vh;
     }
 
     .piece-r5 {
-      top: 80vh;
+      top: 66.666vh;
+    }
+
+    .piece-r6 {
+      top: 83.333vh;
     }
 
     /* Shifts for the decor wrapper inside each piece to perfectly align the single design */
@@ -99,7 +106,11 @@
     }
 
     .piece-c2 .decor-wrapper {
-      left: -50vw;
+      left: -33.333vw;
+    }
+
+    .piece-c3 .decor-wrapper {
+      left: -66.666vw;
     }
 
     .piece-r1 .decor-wrapper {
@@ -107,141 +118,184 @@
     }
 
     .piece-r2 .decor-wrapper {
-      top: -20vh;
+      top: -16.666vh;
     }
 
     .piece-r3 .decor-wrapper {
-      top: -40vh;
+      top: -33.333vh;
     }
 
     .piece-r4 .decor-wrapper {
-      top: -60vh;
+      top: -50vh;
     }
 
     .piece-r5 .decor-wrapper {
-      top: -80vh;
+      top: -66.666vh;
+    }
+
+    .piece-r6 .decor-wrapper {
+      top: -83.333vh;
     }
 
     /* Loaded transforms - moving panels out of view */
+    /* Left side moves left, right side moves right, middle splits (we'll move it up/down) */
     #global-loader.loaded .piece-c1 {
       transform: translateX(-100%);
     }
 
-    #global-loader.loaded .piece-c2 {
+    #global-loader.loaded .piece-c3 {
       transform: translateX(100%);
     }
 
-    /* Sequence delays: 1-2-2-2-2-1 diagonal ripple opening */
-    #global-loader.loaded .piece-r3.piece-c1 {
+    /* Middle column moves up (top half) or down (bottom half) */
+    #global-loader.loaded .piece-c2.piece-r1,
+    #global-loader.loaded .piece-c2.piece-r2,
+    #global-loader.loaded .piece-c2.piece-r3 {
+      transform: translateY(-100%);
+    }
+
+    #global-loader.loaded .piece-c2.piece-r4,
+    #global-loader.loaded .piece-c2.piece-r5,
+    #global-loader.loaded .piece-c2.piece-r6 {
+      transform: translateY(100%);
+    }
+
+    /* Sequence delays: Ripple from center outwards for 18 panels */
+    #global-loader.loaded .piece-r3.piece-c2,
+    #global-loader.loaded .piece-r4.piece-c2 {
       transition-delay: 0.0s;
     }
 
-    #global-loader.loaded .piece-r3.piece-c2,
-    #global-loader.loaded .piece-r2.piece-c1 {
+    #global-loader.loaded .piece-r3.piece-c1,
+    #global-loader.loaded .piece-r3.piece-c3,
+    #global-loader.loaded .piece-r4.piece-c1,
+    #global-loader.loaded .piece-r4.piece-c3 {
       transition-delay: 0.15s;
     }
 
     #global-loader.loaded .piece-r2.piece-c2,
-    #global-loader.loaded .piece-r4.piece-c1 {
-      transition-delay: 0.30s;
+    #global-loader.loaded .piece-r5.piece-c2 {
+      transition-delay: 0.3s;
     }
 
-    #global-loader.loaded .piece-r4.piece-c2,
-    #global-loader.loaded .piece-r1.piece-c1 {
+    #global-loader.loaded .piece-r2.piece-c1,
+    #global-loader.loaded .piece-r2.piece-c3,
+    #global-loader.loaded .piece-r5.piece-c1,
+    #global-loader.loaded .piece-r5.piece-c3 {
       transition-delay: 0.45s;
     }
 
     #global-loader.loaded .piece-r1.piece-c2,
-    #global-loader.loaded .piece-r5.piece-c1 {
-      transition-delay: 0.60s;
+    #global-loader.loaded .piece-r6.piece-c2 {
+      transition-delay: 0.6s;
     }
 
-    #global-loader.loaded .piece-r5.piece-c2 {
+    #global-loader.loaded .piece-r1.piece-c1,
+    #global-loader.loaded .piece-r1.piece-c3,
+    #global-loader.loaded .piece-r6.piece-c1,
+    #global-loader.loaded .piece-r6.piece-c3 {
       transition-delay: 0.75s;
     }
 
 
-    /* --- THE PURE CSS DECOR ART --- */
+    /* --- THE 3D PURE CSS DECOR ART --- */
 
     .decor-wall {
       width: 100vw;
       height: 100vh;
-      background-color: #f7f8f4;
-      /* light creamy wall */
+      /* Realistic wall with soft lighting gradient */
+      background: radial-gradient(circle at center, #ffffff 0%, #e0e5da 100%);
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      /* Arch is grounded at bottom */
-      /* Full shadow to separate from website underneath before opening */
-      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.1);
+      box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.15);
     }
 
     .decor-arch {
-      width: 85vw;
-      max-width: 550px;
-      height: 90vh;
-      /* Sit slightly short of ceiling */
-      background-color: #d1ead4;
-      /* pale green inner wall */
+      width: 80vw;
+      max-width: 600px;
+      height: 92vh;
+      /* Deep 3D inner cavity gradient */
+      background: linear-gradient(135deg, #a8d1b1 0%, #d1ead4 40%, #8dbb97 100%);
       border-top-left-radius: 400px;
-      /* Overshoot to ensure perfect semi-circle cap */
       border-top-right-radius: 400px;
-      box-shadow: inset 0 20px 40px rgba(0, 0, 0, 0.15), inset 0 0 15px rgba(0, 0, 0, 0.1);
+      /* Massive inner shadow to look like a deep alcove */
+      box-shadow:
+        inset 30px 30px 60px rgba(0, 0, 0, 0.25),
+        inset -30px 0px 60px rgba(0, 0, 0, 0.15),
+        inset 0px 50px 80px rgba(0, 0, 0, 0.3);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       position: relative;
-      /* Add wall border frame to separate arch from wall */
-      border: 12px solid #e7ebe1;
+      /* 3D protruding wall border frame */
+      border: 18px solid #f4f7f0;
       border-bottom: none;
+      /* Outer shadow cast onto the wall */
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
     }
 
-    /* The dark green fluted dome at the top of the arch */
+    /* Soft curved lighting reflection inside the arch */
+    .decor-arch::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at top center, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* The dark green fluted dome at the top of the arch - Highly 3D */
     .arch-dome {
-      height: 25%;
-      min-height: 120px;
-      background-color: #123e23;
-      background-image: repeating-linear-gradient(90deg,
-          rgba(0, 0, 0, 0.15) 0px,
-          rgba(0, 0, 0, 0.15) 8px,
-          transparent 8px,
-          transparent 20px);
-      border-bottom: 6px solid #0b2b18;
+      height: 28%;
+      min-height: 140px;
+      background-color: #0c2b18;
+      background-image:
+        repeating-linear-gradient(90deg,
+          rgba(0, 0, 0, 0.4) 0px,
+          rgba(0, 0, 0, 0.0) 4px,
+          rgba(255, 255, 255, 0.1) 8px,
+          rgba(0, 0, 0, 0.4) 12px),
+        linear-gradient(to bottom, #071a0e, #144627);
+      border-bottom: 8px solid #05140b;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      /* Shadow casting down onto shelves */
+      box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.8);
       position: relative;
       z-index: 10;
     }
 
-    /* Gold LUX BOX text on dome */
+    /* Inner lit rim for the dome */
+    .arch-dome::before {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    }
+
+    /* 3D Gold LUX BOX text */
     .arch-text {
       font-family: 'Playfair Display', serif;
-      font-size: 42px;
-      font-weight: 700;
+      font-size: 50px;
+      font-weight: 800;
       color: #dfbea1;
-      letter-spacing: 5px;
+      letter-spacing: 6px;
       margin: 0;
       text-transform: uppercase;
-      animation: gold-shimmer 2.5s infinite ease-in-out;
-      background: linear-gradient(to right, #cfab67, #ffe5a3, #cfab67);
+      /* Metallic 3D text effect */
+      background: linear-gradient(to bottom, #f9e1b2 0%, #d5ae60 40%, #a67c00 50%, #d5ae60 60%, #fff6d9 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
-    }
-
-    @keyframes gold-shimmer {
-
-      0%,
-      100% {
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(255, 229, 163, 0.2));
-      }
-
-      50% {
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 229, 163, 0.7));
-      }
+      filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.8));
     }
 
     /* Shelves Area container */
@@ -250,27 +304,29 @@
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
-      padding: 15px 0 30px;
+      padding: 10px 0 40px;
+      position: relative;
+      z-index: 1;
     }
 
     /* Individual shelf */
     .shelf-row {
       position: relative;
-      width: 86%;
+      width: 90%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
     }
 
-    /* Glow above shelf board */
+    /* Strong LED Glow illuminating the background above the shelf */
     .shelf-glow {
       position: absolute;
-      bottom: 25px;
-      /* right above the board */
-      left: 0;
-      width: 100%;
-      height: 40px;
-      background: linear-gradient(to top, rgba(255, 255, 255, 0.4), transparent);
+      bottom: 22px;
+      left: 2%;
+      width: 96%;
+      height: 60px;
+      background: linear-gradient(to top, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1) 40%, transparent 100%);
+      opacity: 0.8;
       pointer-events: none;
       z-index: 0;
     }
@@ -278,132 +334,179 @@
     .products {
       display: flex;
       justify-content: space-evenly;
-      /* spread products out */
       align-items: flex-end;
-      height: 45px;
-      padding: 0 20px;
+      height: 55px;
+      padding: 0 30px;
       position: relative;
       z-index: 5;
     }
 
-    /* Shelf solid board */
+    /* 3D Shelf solid board */
     .shelf-board {
-      height: 16px;
-      background-color: #123e23;
-      border-radius: 3px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      height: 20px;
+      /* Multi-layered gradient for a chunky, realistic wood/metal look */
+      background: linear-gradient(to bottom, #1f5e38 0%, #123e23 30%, #0a2414 100%);
+      border-radius: 4px;
+      /* Bevel edge and drop shadow */
+      box-shadow:
+        inset 0 2px 2px rgba(255, 255, 255, 0.3),
+        /* Top highlight */
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+        /* Bottom shading */
+        0 10px 15px rgba(0, 0, 0, 0.6);
+      /* Drop shadow */
       position: relative;
       z-index: 2;
     }
 
-    /* LED Strip under the board */
+    /* Vibrant LED Strip mounted under the front edge */
     .shelf-led {
-      height: 3px;
+      height: 4px;
       background-color: #fff;
-      width: 95%;
+      width: 92%;
       margin: 0 auto;
-      box-shadow: 0 5px 15px 2px rgba(255, 255, 255, 0.9), 0 10px 30px 5px rgba(255, 255, 255, 0.5);
-      border-radius: 0 0 4px 4px;
+      /* Intense glow */
+      box-shadow:
+        0 2px 10px 2px rgba(255, 255, 255, 1),
+        0 8px 25px 5px rgba(255, 255, 255, 0.6);
+      border-radius: 0 0 6px 6px;
       position: relative;
       z-index: 1;
     }
 
-    /* --- Vapes / Products CSS Art --- */
+    /* --- 3D Vapes / Products CSS Art --- */
     .prod {
-      width: 16px;
-      /* styled like sleak perfume/vape boxes */
-      border-top-left-radius: 2px;
-      border-top-right-radius: 2px;
-      box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.3);
+      width: 18px;
+      /* Create a cylindrical/box 3D effect with strong horizontal gradients */
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      /* Drop shadow on the shelf */
+      box-shadow:
+        -4px 4px 6px rgba(0, 0, 0, 0.5),
+        -1px 1px 2px rgba(0, 0, 0, 0.8);
       position: relative;
-      margin: 0 2px;
+      margin: 0 4px;
+      transition: transform 0.3s;
     }
 
-    /* Small black cap on top of vapes */
+    /* 3D Top Cap/Mouthpiece */
     .prod::after {
       content: '';
       position: absolute;
-      top: -4px;
+      top: -6px;
       left: 15%;
       width: 70%;
-      height: 4px;
-      background-color: #111;
-      border-radius: 1px 1px 0 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    /* Product color schemes simulating boxes */
-    .p1 {
-      height: 35px;
-      background: linear-gradient(to top, #111, #444);
+      height: 6px;
+      background: linear-gradient(90deg, #111 0%, #444 30%, #111 100%);
+      border-radius: 2px 2px 0 0;
       border-top: 1px solid #777;
+      box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.2);
     }
 
-    /* Black box */
-    .p2 {
-      height: 32px;
-      background: linear-gradient(to top, #1b5e20, #4caf50);
-    }
-
-    /* Green box */
-    .p3 {
-      height: 28px;
-      background: linear-gradient(to top, #880e4f, #f06292);
-    }
-
-    /* Pink box */
-    .p4 {
-      height: 30px;
-      background: linear-gradient(to top, #01579b, #29b6f6);
-    }
-
-    /* Blue box */
-    .p5 {
-      height: 36px;
-      background: linear-gradient(to top, #e65100, #ffb74d);
-    }
-
-    /* Orange box */
-    .p6 {
-      height: 31px;
-      background: linear-gradient(to top, #311b92, #9575cd);
-    }
-
-    /* Purple box */
-
-    /* Add little logo circle to product boxes for realism */
+    /* Bottom metallic base */
     .prod::before {
       content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #888 0%, #ccc 30%, #555 100%);
+      z-index: 2;
+    }
+
+    /* Product color schemes simulating 3D painted metal/plastic */
+    .p1 {
+      height: 40px;
+      background: linear-gradient(90deg, #1a1a1a 0%, #3d3d3d 30%, #000 100%);
+    }
+
+    /* Space Grey */
+    .p2 {
+      height: 36px;
+      background: linear-gradient(90deg, #1b5e20 0%, #4caf50 30%, #0d3610 100%);
+    }
+
+    /* Emerald */
+    .p3 {
+      height: 32px;
+      background: linear-gradient(90deg, #880e4f 0%, #f06292 30%, #4a0328 100%);
+    }
+
+    /* Rose Gold */
+    .p4 {
+      height: 35px;
+      background: linear-gradient(90deg, #01579b 0%, #29b6f6 30%, #012d52 100%);
+    }
+
+    /* Ocean Blue */
+    .p5 {
+      height: 42px;
+      background: linear-gradient(90deg, #d84315 0%, #ff8a65 30%, #751d02 100%);
+    }
+
+    /* Copper */
+    .p6 {
+      height: 38px;
+      background: linear-gradient(90deg, #311b92 0%, #9575cd 30%, #150a47 100%);
+    }
+
+    /* Amethyst */
+    .p7 {
+      height: 45px;
+      background: linear-gradient(90deg, #d4af37 0%, #f9f1b2 30%, #997818 100%);
+    }
+
+    /* Pure Gold */
+
+    /* Glossy screen/logo indicator on the front */
+    .prod-glass {
       position: absolute;
       top: 30%;
       left: 50%;
       transform: translateX(-50%);
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(to bottom, #111, #333);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.8);
+      z-index: 1;
+    }
+
+    /* Small LED dot inside screen */
+    .prod-glass::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 2px;
       border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+      background-color: #0f0;
+      box-shadow: 0 0 3px #0f0;
     }
   </style>
 
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Script to programmatically generate the 10-panel cinematic CSS Art loader -->
+  <!-- Script to programmatically generate the 18-panel cinematic CSS Art loader -->
   <script>
     (function () {
-      // Product distributions per shelf to make it look realistic and organic
+      // Dynamic arrays mapping products
       const shelfItems = [
-        ['p1', 'p2', 'p3', 'p1', 'p4', 'p2', 'p6'],
-        ['p4', 'p6', 'p5', 'p2', 'p1', 'p3', 'p4'],
-        ['p3', 'p1', 'p2', 'p6', 'p5', 'p1', 'p2'],
-        ['p2', 'p2', 'p4', 'p3', 'p1', 'p6', 'p5'],
-        ['p5', 'p4', 'p3', 'p6', 'p1', 'p2', 'p1']
+        ['p1', 'p7', 'p3', 'p1', 'p4', 'p2', 'p6', 'p7'],
+        ['p4', 'p6', 'p5', 'p7', 'p2', 'p1', 'p3', 'p4'],
+        ['p3', 'p1', 'p2', 'p6', 'p5', 'p7', 'p1', 'p2'],
+        ['p7', 'p2', 'p4', 'p3', 'p1', 'p6', 'p5', 'p7'],
+        ['p5', 'p4', 'p3', 'p7', 'p6', 'p1', 'p2', 'p1']
       ];
 
       let shelvesHTML = '';
       shelfItems.forEach(shelf => {
-        let prods = shelf.map(p => '<div class="prod ' + p + '"></div>').join('');
+        let prods = shelf.map(p => '<div class="prod ' + p + '"><div class="prod-glass"></div></div>').join('');
         shelvesHTML +=
           '<div class="shelf-row">' +
           '<div class="shelf-glow"></div>' +
@@ -413,7 +516,7 @@
           '</div>';
       });
 
-      // HTML template for the actual arched cabinet decor
+      // HTML template for the 3D arched cabinet decor
       const designHTML =
         '<div class="decor-wrapper">' +
         '<div class="decor-wall">' +
@@ -431,10 +534,10 @@
       const loaderContainer = document.getElementById('global-loader');
 
       if (loaderContainer) {
-        // Generate the 10 grid pieces exactly seamlessly
-        // No borders so they act as a single piece initially
-        for (let r = 1; r <= 5; r++) {
-          for (let c = 1; c <= 2; c++) {
+        // Generate the 18 grid pieces flawlessly
+        // 6 Rows x 3 Cols
+        for (let r = 1; r <= 6; r++) {
+          for (let c = 1; c <= 3; c++) {
             const piece = document.createElement('div');
             piece.className = 'piece piece-r' + r + ' piece-c' + c;
             piece.innerHTML = designHTML;
@@ -442,18 +545,17 @@
           }
         }
 
-        // Wait to trigger animation so user can see the beautiful CSS decor!
         window.addEventListener('load', function () {
-          // Give user 1.2s to enjoy the design
+          // Give user 1.5s to appreciate the intricate 3D CSS rendering
           setTimeout(() => {
             loaderContainer.classList.add('loaded');
             // Longest delay (0.75s) + animation (1.2s) = 1.95s
-            // Remove from DOM safely after 2.1s
+            // Safely remove after visual completion
             setTimeout(() => {
               loaderContainer.classList.add('hidden');
               loaderContainer.remove();
             }, 2100);
-          }, 1200);
+          }, 1500);
         });
       }
     })();
