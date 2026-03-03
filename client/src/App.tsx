@@ -67,22 +67,29 @@ function Router() {
 
 function App() {
   useEffect(() => {
+    // Only initialize Lenis on desktop/larger screens where smooth scroll adds value
+    // On mobile, native inertial scrolling is heavily hardware optimized and smooth scroll libraries often cause jank
+    if (window.innerWidth < 768) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
+      touchMultiplier: 2,
     });
 
+    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);

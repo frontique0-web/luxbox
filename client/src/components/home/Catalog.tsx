@@ -276,7 +276,7 @@ export default function Catalog() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="ابحث عن منتج..."
-              className="w-full pr-12 pl-12 py-4 rounded-full border-2 border-gray-200 bg-white/90 backdrop-blur-sm font-arabic text-base text-[#0B281F] placeholder:text-gray-400 focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 shadow-md transition-all"
+              className="w-full pr-12 pl-12 py-4 rounded-full border-2 border-gray-200 bg-white/95 font-arabic text-base text-[#0B281F] placeholder:text-gray-400 focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 shadow-md transition-all"
               dir="rtl"
             />
             {searchQuery && (
@@ -396,7 +396,7 @@ export default function Catalog() {
                         isActive ? "bg-black/10" : "bg-black/20"
                       )} />
 
-                      <div className="relative z-10 w-full bg-white/90 backdrop-blur-sm py-3 px-2 border-t border-white/40">
+                      <div className="relative z-10 w-full bg-white/95 py-3 px-2 border-t border-white/40 shadow-sm">
                         <span className={cn(
                           "font-arabic font-bold text-sm text-center block w-full transition-all",
                           isActive ? "text-[#D4AF37]" : "text-[#0B281F]"
@@ -463,7 +463,7 @@ export default function Catalog() {
 
                           {product.badge && (
                             <div className="absolute top-4 right-4 z-20">
-                              <div className="bg-[#D4AF37]/90 backdrop-blur-sm px-2 py-1 rounded border border-[#D4AF37]/30 shadow-sm">
+                              <div className="bg-[#D4AF37] px-2 py-1 rounded shadow-sm">
                                 <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
                                   {product.badge}
                                 </span>
