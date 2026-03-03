@@ -260,7 +260,7 @@ export default function Catalog() {
   }
 
   return (
-    <section id="catalog" className="pt-8 lg:pt-24 bg-cover bg-center bg-fixed min-h-screen relative" style={{ backgroundImage: "url('/assets/marble-bg.png')" }}>
+    <section id="catalog" className="pt-8 lg:pt-24 bg-cover bg-center min-h-screen relative" style={{ backgroundImage: "url('/assets/marble-bg.png')" }}>
       <div className="absolute inset-0 bg-white/40 pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10 max-w-5xl">
@@ -418,7 +418,6 @@ export default function Catalog() {
 
       {isSearching ? (
         <div ref={productsRef} className="relative pt-12 pb-20 bg-[#0B281F] rounded-t-[40px] lg:rounded-t-[80px] border-t-4 border-[#D4AF37] shadow-2xl mt-8 overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_90%,rgba(255,255,255,0.02)_100%)] bg-[length:100%_12px] pointer-events-none mix-blend-screen" />
           <div className="absolute inset-0 bg-radial-gradient from-transparent to-[#04120e]/60 pointer-events-none" />
 
           <div className="container mx-auto px-6 relative z-10">
@@ -501,9 +500,8 @@ export default function Catalog() {
         </div>
       ) : (
         <div ref={productsRef} className="relative pt-12 pb-20 bg-[#0B281F] rounded-t-[80px] lg:rounded-t-[150px] border-t-8 border-[#D4AF37] shadow-2xl overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_90%,rgba(255,255,255,0.02)_100%)] bg-[length:100%_12px] pointer-events-none mix-blend-screen" />
           <div className="absolute inset-0 bg-radial-gradient from-transparent to-[#04120e]/60 pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-4 bg-[#D4AF37]/20 blur-sm rounded-t-[80px] lg:rounded-t-[150px] z-10" />
+          <div className="absolute top-0 left-0 right-0 h-4 bg-[#D4AF37]/10 rounded-t-[80px] lg:rounded-t-[150px] z-10" />
 
           <div className="container mx-auto px-6 relative z-10">
             {isVapeCategory && activeCategoryId ? (
@@ -667,7 +665,7 @@ export default function Catalog() {
 
                                 {product.badge && (
                                   <div className="absolute top-4 right-4 z-20">
-                                    <div className="bg-[#D4AF37]/90 backdrop-blur-sm px-2 py-1 rounded border border-[#D4AF37]/30 shadow-sm">
+                                    <div className="bg-[#D4AF37] px-2 py-1 rounded shadow-sm">
                                       <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
                                         {product.badge}
                                       </span>
@@ -701,7 +699,7 @@ export default function Catalog() {
                                 </div>
                               </div>
 
-                              <div className="absolute -bottom-2 left-4 right-4 h-4 bg-[#D4AF37]/20 blur-xl rounded-full -z-10 group-hover:bg-[#D4AF37]/40 transition-colors duration-500" />
+                              <div className="absolute -bottom-2 left-4 right-4 h-4 rounded-full -z-10 shadow-[0_15px_30px_-5px_#D4AF3750] group-hover:shadow-[0_20px_40px_-5px_#D4AF3770] transition-shadow duration-500" />
                             </Link>
                           </motion.div>
                         ))}

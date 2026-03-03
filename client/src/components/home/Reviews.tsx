@@ -55,21 +55,21 @@ export default function Reviews() {
 
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0B281F] via-[#0E2E24] to-[#0B281F]" />
-      
+
       {/* Subtle pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-        style={{ backgroundImage: 'url(/assets/marble-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} 
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{ backgroundImage: 'url(/assets/marble-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
       />
 
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
-      <div className="absolute top-20 right-10 w-72 h-72 rounded-full bg-[#D4AF37]/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 left-10 w-60 h-60 rounded-full bg-[#D4AF37]/3 blur-3xl pointer-events-none" />
+      <div className="absolute top-20 right-10 w-72 h-72 rounded-full bg-[#D4AF37]/10 pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-60 h-60 rounded-full bg-[#D4AF37]/5 pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10">
 
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -142,7 +142,7 @@ export default function Reviews() {
 
 function ReviewCard({ review }: { review: typeof reviews[0] }) {
   return (
-    <div className="relative bg-white/[0.07] backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-[#D4AF37]/30 transition-all duration-300 h-full flex flex-col group">
+    <div className="relative bg-[#ffffff15] rounded-2xl p-6 border border-white/10 hover:border-[#D4AF37]/30 transition-all duration-300 h-full flex flex-col group shadow-lg">
 
       {/* Top row: avatar + name + stars */}
       <div className="flex items-center justify-between mb-5">

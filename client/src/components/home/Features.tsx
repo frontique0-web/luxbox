@@ -32,8 +32,8 @@ export default function Features() {
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
 
       {/* Background soft shapes */}
-      <div className="absolute top-1/2 -translate-y-1/2 right-0 w-[500px] h-[500px] rounded-full bg-[#0B281F]/[0.015] blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -translate-y-1/2 left-0 w-[400px] h-[400px] rounded-full bg-[#D4AF37]/[0.03] blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -translate-y-1/2 right-0 w-[500px] h-[500px] rounded-full bg-[#0B281F]/5 pointer-events-none" />
+      <div className="absolute top-1/2 -translate-y-1/2 left-0 w-[400px] h-[400px] rounded-full bg-[#D4AF37]/5 pointer-events-none" />
 
       {/* Vertical slats */}
       <div className="absolute top-0 left-0 h-full flex gap-[80px] opacity-[0.02] pointer-events-none">

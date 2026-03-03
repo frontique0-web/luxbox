@@ -248,7 +248,7 @@ function ProductsGrid({
 
                 {product.badge && (
                   <div className="absolute top-4 right-4 z-20">
-                    <div className="bg-[#D4AF37]/90 backdrop-blur-sm px-2 py-1 rounded border border-[#D4AF37]/30 shadow-sm">
+                    <div className="bg-[#D4AF37] px-2 py-1 rounded shadow-sm">
                       <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
                         {product.badge}
                       </span>
@@ -282,7 +282,7 @@ function ProductsGrid({
                 </div>
               </div>
 
-              <div className="absolute -bottom-2 left-4 right-4 h-4 bg-[#D4AF37]/20 blur-xl rounded-full -z-10 group-hover:bg-[#D4AF37]/40 transition-colors duration-500" />
+              <div className="absolute -bottom-2 left-4 right-4 h-4 rounded-full -z-10 shadow-[0_15px_30px_-5px_#D4AF3750] group-hover:shadow-[0_20px_40px_-5px_#D4AF3770] transition-shadow duration-500" />
             </Link>
           </motion.div>
         ))}
