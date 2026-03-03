@@ -25,327 +25,438 @@
 </head>
 
 <body>
-  <!-- Global Loading Screen - 10-Panel Cohesive Cinematic Animation -->
-  <div id="global-loader" class="multi-panel-loader">
+  <!-- Global Loading Screen - Pure CSS Decor (Arched Cabinet) -->
+  <div id="global-loader"></div>
 
-    <!-- 10 Panels (5 Rows x 2 Columns) -->
-    <!-- Row 1 -->
-    <div class="panel panel-left row-1"></div>
-    <div class="panel panel-right row-1"></div>
+  <style>
+    /* Full body reset during load */
+    body {
+      margin: 0;
+    }
 
-    <!-- Row 2 -->
-    <div class="panel panel-left row-2"></div>
-    <div class="panel panel-right row-2"></div>
+    #global-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: transparent;
+      /* No black background */
+    }
 
-    <!-- Row 3 (Center) -->
-    <div class="panel panel-left row-3"></div>
-    <div class="panel panel-right row-3"></div>
+    #global-loader.hidden {
+      visibility: hidden;
+      transition: visibility 0s linear 3s;
+    }
 
-    <!-- Row 4 -->
-    <div class="panel panel-left row-4"></div>
-    <div class="panel panel-right row-4"></div>
+    /* 10 Pieces of the Loading Screen */
+    .piece {
+      position: absolute;
+      width: 50vw;
+      height: 20vh;
+      overflow: hidden;
+      /* Slow, cinematic ease-in-out */
+      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+    }
 
-    <!-- Row 5 -->
-    <div class="panel panel-left row-5"></div>
-    <div class="panel panel-right row-5"></div>
+    /* Col positions */
+    .piece-c1 {
+      left: 0;
+    }
 
-    <!-- Center Content: Logo and LUX BOX sign overlay -->
-    <div class="panel-loader-content" id="loader-content">
-      <div class="loader-logo-container">
-        <!-- Gold pulsing ring for realistic luxury feel -->
-        <div class="golden-rings">
-          <div class="ring-outer"></div>
-          <div class="ring-inner"></div>
-          <div class="diamond-center"></div>
-        </div>
-      </div>
-      <h1 class="loader-title">LUX BOX</h1>
-      <p class="loader-subtitle" dir="rtl">بوابة الفخامة تفتح الآن...</p>
-    </div>
+    .piece-c2 {
+      left: 50vw;
+    }
 
-    <style>
-      /* Main Background Container */
-      .multi-panel-loader {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        overflow: hidden;
-        background-color: transparent;
-        /* No black background */
+    /* Row positions */
+    .piece-r1 {
+      top: 0;
+    }
+
+    .piece-r2 {
+      top: 20vh;
+    }
+
+    .piece-r3 {
+      top: 40vh;
+    }
+
+    .piece-r4 {
+      top: 60vh;
+    }
+
+    .piece-r5 {
+      top: 80vh;
+    }
+
+    /* Shifts for the decor wrapper inside each piece to perfectly align the single design */
+    .decor-wrapper {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .piece-c1 .decor-wrapper {
+      left: 0;
+    }
+
+    .piece-c2 .decor-wrapper {
+      left: -50vw;
+    }
+
+    .piece-r1 .decor-wrapper {
+      top: 0;
+    }
+
+    .piece-r2 .decor-wrapper {
+      top: -20vh;
+    }
+
+    .piece-r3 .decor-wrapper {
+      top: -40vh;
+    }
+
+    .piece-r4 .decor-wrapper {
+      top: -60vh;
+    }
+
+    .piece-r5 .decor-wrapper {
+      top: -80vh;
+    }
+
+    /* Loaded transforms - moving panels out of view */
+    #global-loader.loaded .piece-c1 {
+      transform: translateX(-100%);
+    }
+
+    #global-loader.loaded .piece-c2 {
+      transform: translateX(100%);
+    }
+
+    /* Sequence delays: 1-2-2-2-2-1 diagonal ripple opening */
+    #global-loader.loaded .piece-r3.piece-c1 {
+      transition-delay: 0.0s;
+    }
+
+    #global-loader.loaded .piece-r3.piece-c2,
+    #global-loader.loaded .piece-r2.piece-c1 {
+      transition-delay: 0.15s;
+    }
+
+    #global-loader.loaded .piece-r2.piece-c2,
+    #global-loader.loaded .piece-r4.piece-c1 {
+      transition-delay: 0.30s;
+    }
+
+    #global-loader.loaded .piece-r4.piece-c2,
+    #global-loader.loaded .piece-r1.piece-c1 {
+      transition-delay: 0.45s;
+    }
+
+    #global-loader.loaded .piece-r1.piece-c2,
+    #global-loader.loaded .piece-r5.piece-c1 {
+      transition-delay: 0.60s;
+    }
+
+    #global-loader.loaded .piece-r5.piece-c2 {
+      transition-delay: 0.75s;
+    }
+
+
+    /* --- THE PURE CSS DECOR ART --- */
+
+    .decor-wall {
+      width: 100vw;
+      height: 100vh;
+      background-color: #f7f8f4;
+      /* light creamy wall */
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      /* Arch is grounded at bottom */
+      /* Full shadow to separate from website underneath before opening */
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.1);
+    }
+
+    .decor-arch {
+      width: 85vw;
+      max-width: 550px;
+      height: 90vh;
+      /* Sit slightly short of ceiling */
+      background-color: #d1ead4;
+      /* pale green inner wall */
+      border-top-left-radius: 400px;
+      /* Overshoot to ensure perfect semi-circle cap */
+      border-top-right-radius: 400px;
+      box-shadow: inset 0 20px 40px rgba(0, 0, 0, 0.15), inset 0 0 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      /* Add wall border frame to separate arch from wall */
+      border: 12px solid #e7ebe1;
+      border-bottom: none;
+    }
+
+    /* The dark green fluted dome at the top of the arch */
+    .arch-dome {
+      height: 25%;
+      min-height: 120px;
+      background-color: #123e23;
+      background-image: repeating-linear-gradient(90deg,
+          rgba(0, 0, 0, 0.15) 0px,
+          rgba(0, 0, 0, 0.15) 8px,
+          transparent 8px,
+          transparent 20px);
+      border-bottom: 6px solid #0b2b18;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Gold LUX BOX text on dome */
+    .arch-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: #dfbea1;
+      letter-spacing: 5px;
+      margin: 0;
+      text-transform: uppercase;
+      animation: gold-shimmer 2.5s infinite ease-in-out;
+      background: linear-gradient(to right, #cfab67, #ffe5a3, #cfab67);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+    }
+
+    @keyframes gold-shimmer {
+
+      0%,
+      100% {
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(255, 229, 163, 0.2));
       }
 
-      .multi-panel-loader.hidden {
-        visibility: hidden;
-        transition: visibility 0s linear 3s;
+      50% {
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 229, 163, 0.7));
       }
+    }
 
-      /* Base style for the 10 door panels */
-      .panel {
-        position: absolute;
-        width: 50vw;
-        height: 20vh;
-        /* Using the exact decor image requested so it looks like one huge piece */
-        background-color: #0b281f;
-        /* Fallback */
-        background-image:
-          linear-gradient(rgba(11, 40, 31, 0.6), rgba(7, 26, 20, 0.8)),
-          url('/assets/store-interior.jpg');
-        background-size: 100vw 100vh;
-        background-attachment: fixed;
-        /* This makes the background continuous across all panels */
-        background-position: center;
-        background-repeat: no-repeat;
-        /* Increase duration for a slower, more majestic cinematic feel */
-        transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
-        z-index: 1;
+    /* Shelves Area container */
+    .arch-shelves {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 15px 0 30px;
+    }
 
-        /* Subtle inner shadow for a tiny hint of depth on the full frame, but NO lines/borders inside */
-      }
+    /* Individual shelf */
+    .shelf-row {
+      position: relative;
+      width: 86%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
 
-      /* Add full-screen outer shadow, but not between panels */
-      .panel-left {
-        left: 0;
-        box-shadow: inset 10px 0 20px rgba(0, 0, 0, 0.5);
-      }
+    /* Glow above shelf board */
+    .shelf-glow {
+      position: absolute;
+      bottom: 25px;
+      /* right above the board */
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(to top, rgba(255, 255, 255, 0.4), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-      .panel-right {
-        right: 0;
-        box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.5);
-      }
+    .products {
+      display: flex;
+      justify-content: space-evenly;
+      /* spread products out */
+      align-items: flex-end;
+      height: 45px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 5;
+    }
 
-      .row-1 {
-        top: 0;
-        box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5);
-      }
+    /* Shelf solid board */
+    .shelf-board {
+      height: 16px;
+      background-color: #123e23;
+      border-radius: 3px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 2;
+    }
 
-      .row-5 {
-        top: 80vh;
-        box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.5);
-      }
+    /* LED Strip under the board */
+    .shelf-led {
+      height: 3px;
+      background-color: #fff;
+      width: 95%;
+      margin: 0 auto;
+      box-shadow: 0 5px 15px 2px rgba(255, 255, 255, 0.9), 0 10px 30px 5px rgba(255, 255, 255, 0.5);
+      border-radius: 0 0 4px 4px;
+      position: relative;
+      z-index: 1;
+    }
 
-      .panel-left.row-1 {
-        box-shadow: inset 10px 10px 20px rgba(0, 0, 0, 0.5);
-      }
+    /* --- Vapes / Products CSS Art --- */
+    .prod {
+      width: 16px;
+      /* styled like sleak perfume/vape boxes */
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      margin: 0 2px;
+    }
 
-      .panel-right.row-1 {
-        box-shadow: inset -10px 10px 20px rgba(0, 0, 0, 0.5);
-      }
+    /* Small black cap on top of vapes */
+    .prod::after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 15%;
+      width: 70%;
+      height: 4px;
+      background-color: #111;
+      border-radius: 1px 1px 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
 
-      .panel-left.row-5 {
-        box-shadow: inset 10px -10px 20px rgba(0, 0, 0, 0.5);
-      }
+    /* Product color schemes simulating boxes */
+    .p1 {
+      height: 35px;
+      background: linear-gradient(to top, #111, #444);
+      border-top: 1px solid #777;
+    }
 
-      .panel-right.row-5 {
-        box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.5);
-      }
+    /* Black box */
+    .p2 {
+      height: 32px;
+      background: linear-gradient(to top, #1b5e20, #4caf50);
+    }
 
-      /* Positioning the middle Rows */
-      .row-2 {
-        top: 20vh;
-      }
+    /* Green box */
+    .p3 {
+      height: 28px;
+      background: linear-gradient(to top, #880e4f, #f06292);
+    }
 
-      .row-3 {
-        top: 40vh;
-      }
+    /* Pink box */
+    .p4 {
+      height: 30px;
+      background: linear-gradient(to top, #01579b, #29b6f6);
+    }
 
-      .row-4 {
-        top: 60vh;
-      }
+    /* Blue box */
+    .p5 {
+      height: 36px;
+      background: linear-gradient(to top, #e65100, #ffb74d);
+    }
 
-      /* --- Animation Sequence --- */
-      /* User requested: 1, 2, 2, 2, 2, 1 open sequence.
-         We will open:
-         - Row 3 Left first (1)
-         - Row 3 Right + Row 2 Left (2)
-         - Row 2 Right + Row 4 Left (2)
-         - Row 4 Right + Row 1 Left (2)
-         - Row 1 Right + Row 5 Left (2)
-         - Row 5 Right last (1)
-         This creates a beautiful diagonal sweeping ripple effect.
-      */
+    /* Orange box */
+    .p6 {
+      height: 31px;
+      background: linear-gradient(to top, #311b92, #9575cd);
+    }
 
-      .multi-panel-loader.loaded .panel-left.row-3 {
-        transition-delay: 0.0s;
-      }
+    /* Purple box */
 
-      .multi-panel-loader.loaded .panel-right.row-3,
-      .multi-panel-loader.loaded .panel-left.row-2 {
-        transition-delay: 0.2s;
-      }
-
-      .multi-panel-loader.loaded .panel-right.row-2,
-      .multi-panel-loader.loaded .panel-left.row-4 {
-        transition-delay: 0.4s;
-      }
-
-      .multi-panel-loader.loaded .panel-right.row-4,
-      .multi-panel-loader.loaded .panel-left.row-1 {
-        transition-delay: 0.6s;
-      }
-
-      .multi-panel-loader.loaded .panel-right.row-1,
-      .multi-panel-loader.loaded .panel-left.row-5 {
-        transition-delay: 0.8s;
-      }
-
-      .multi-panel-loader.loaded .panel-right.row-5 {
-        transition-delay: 1.0s;
-      }
-
-      /* The Opening Translations */
-      .multi-panel-loader.loaded .panel-left {
-        transform: translateX(-100%);
-      }
-
-      .multi-panel-loader.loaded .panel-right {
-        transform: translateX(100%);
-      }
-
-      /* Center Content Overlay */
-      .panel-loader-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 10;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        width: 100%;
-        padding: 0 20px;
-        filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.8));
-      }
-
-      /* Logo and text fade out slightly before the panel animations start */
-      .multi-panel-loader.loaded .panel-loader-content {
-        opacity: 0;
-        transform: translate(-50%, -55%) scale(0.9);
-        filter: blur(8px);
-      }
-
-      /* Modern Gold Rings */
-      .golden-rings {
-        position: relative;
-        width: 80px;
-        height: 80px;
-        margin: 0 auto 24px;
-      }
-
-      .ring-outer {
-        position: absolute;
-        inset: 0;
-        border: 2px solid rgba(212, 175, 55, 0.15);
-        border-radius: 50%;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-      }
-
-      .ring-inner {
-        position: absolute;
-        inset: 0;
-        border: 2px solid transparent;
-        border-top-color: #D4AF37;
-        border-left-color: #D4AF37;
-        border-radius: 50%;
-        animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-      }
-
-      .diamond-center {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(45deg);
-        width: 16px;
-        height: 16px;
-        background-color: #D4AF37;
-        animation: diamond-pulse 2s ease-in-out infinite;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes diamond-pulse {
-
-        0%,
-        100% {
-          transform: translate(-50%, -50%) rotate(45deg) scale(0.85);
-          opacity: 0.8;
-        }
-
-        50% {
-          transform: translate(-50%, -50%) rotate(45deg) scale(1.15);
-          opacity: 1;
-          box-shadow: 0 0 25px rgba(212, 175, 55, 1);
-        }
-      }
-
-      /* LUX BOX GOLD SIGN */
-      .loader-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 38px;
-        font-weight: 600;
-        color: #dcb348;
-        letter-spacing: 0.25em;
-        margin: 0;
-        text-transform: uppercase;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
-        animation: shimmer 3s infinite linear;
-        background: linear-gradient(to right, #dcb348, #FFF, #dcb348);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-size: 200% auto;
-      }
-
-      .loader-subtitle {
-        font-family: 'Tajawal', sans-serif;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 16px;
-        letter-spacing: 0.15em;
-        font-weight: 300;
-        margin-top: 16px;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
-      }
-
-      @keyframes shimmer {
-        to {
-          background-position: 200% center;
-        }
-      }
-    </style>
-  </div>
+    /* Add little logo circle to product boxes for realism */
+    .prod::before {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+    }
+  </style>
 
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Script to trigger the 10-panel cinematic split -->
+  <!-- Script to programmatically generate the 10-panel cinematic CSS Art loader -->
   <script>
-    window.addEventListener('load', function () {
-      const loader = document.getElementById('global-loader');
+    (function () {
+      // Product distributions per shelf to make it look realistic and organic
+      const shelfItems = [
+        ['p1', 'p2', 'p3', 'p1', 'p4', 'p2', 'p6'],
+        ['p4', 'p6', 'p5', 'p2', 'p1', 'p3', 'p4'],
+        ['p3', 'p1', 'p2', 'p6', 'p5', 'p1', 'p2'],
+        ['p2', 'p2', 'p4', 'p3', 'p1', 'p6', 'p5'],
+        ['p5', 'p4', 'p3', 'p6', 'p1', 'p2', 'p1']
+      ];
 
-      if (loader) {
-        // Wait slightly longer for dramatic effect so user sees the CSS design
-        setTimeout(() => {
-          // Trigger the sequence opening
-          loader.classList.add('loaded');
+      let shelvesHTML = '';
+      shelfItems.forEach(shelf => {
+        let prods = shelf.map(p => '<div class="prod ' + p + '"></div>').join('');
+        shelvesHTML +=
+          '<div class="shelf-row">' +
+          '<div class="shelf-glow"></div>' +
+          '<div class="products">' + prods + '</div>' +
+          '<div class="shelf-board"></div>' +
+          '<div class="shelf-led"></div>' +
+          '</div>';
+      });
 
-          // Wait until the longest animation finishes (0.6s delay + 1.2s duration = 1.8s)
+      // HTML template for the actual arched cabinet decor
+      const designHTML =
+        '<div class="decor-wrapper">' +
+        '<div class="decor-wall">' +
+        '<div class="decor-arch">' +
+        '<div class="arch-dome">' +
+        '<h1 class="arch-text">LUX BOX</h1>' +
+        '</div>' +
+        '<div class="arch-shelves">' +
+        shelvesHTML +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+      const loaderContainer = document.getElementById('global-loader');
+
+      if (loaderContainer) {
+        // Generate the 10 grid pieces exactly seamlessly
+        // No borders so they act as a single piece initially
+        for (let r = 1; r <= 5; r++) {
+          for (let c = 1; c <= 2; c++) {
+            const piece = document.createElement('div');
+            piece.className = 'piece piece-r' + r + ' piece-c' + c;
+            piece.innerHTML = designHTML;
+            loaderContainer.appendChild(piece);
+          }
+        }
+
+        // Wait to trigger animation so user can see the beautiful CSS decor!
+        window.addEventListener('load', function () {
+          // Give user 1.2s to enjoy the design
           setTimeout(() => {
-            loader.classList.add('hidden');
-            loader.remove();
-          }, 2000);
-        }, 1200);
+            loaderContainer.classList.add('loaded');
+            // Longest delay (0.75s) + animation (1.2s) = 1.95s
+            // Remove from DOM safely after 2.1s
+            setTimeout(() => {
+              loaderContainer.classList.add('hidden');
+              loaderContainer.remove();
+            }, 2100);
+          }, 1200);
+        });
       }
-    });
+    })();
   </script>
 </body>
 
