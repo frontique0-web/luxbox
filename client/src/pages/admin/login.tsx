@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,12 @@ export default function AdminLogin() {
     const [, setLocation] = useLocation();
     const { toast } = useToast();
     const { login } = useAdminAuth();
+
+    useEffect(() => {
+        if (typeof window !== "undefined" && (window as any).hideLuxLoader) {
+            (window as any).hideLuxLoader();
+        }
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();

@@ -1,5 +1,5 @@
 import { db } from "./db.js";
-import { categories, subcategories, products } from "../shared/schema.js";
+import { categories, subcategories, products, admins } from "../shared/schema.js";
 import { sql } from "drizzle-orm";
 import path from "path";
 
@@ -81,6 +81,21 @@ export async function autoSeed() {
 
     const result = await db.select({ count: sql<number>`count(*)` }).from(categories);
     const count = Number(result[0]?.count ?? 0);
+
+    // Ensure default admin user exists
+    try {
+      const [adminResult] = await db.select({ count: sql<number>`count(*)` }).from(admins);
+      if (Number(adminResult?.count ?? 0) === 0) {
+        console.log("No admin found, creating default admin user...");
+        await db.insert(admins).values({
+          username: 'admin',
+          password: process.env.ADMIN_PASSWORD || 'admin'
+        });
+        console.log("Default admin created successfully!");
+      }
+    } catch (adminErr: any) {
+      console.warn("⚠️ Failed to check/create admin user:", adminErr.message);
+    }
 
     if (count > 0) {
       console.log("Database already seeded, skipping...");
