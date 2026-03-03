@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAdminAuth } from "@/hooks/use-admin-auth";
 import { LayoutDashboard, Tag, Package, Settings, LogOut, Store, Menu, Bookmark } from "lucide-react";
@@ -8,6 +9,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [location] = useLocation();
     const { logout, user } = useAdminAuth();
+
+    useEffect(() => {
+        if (typeof window !== "undefined" && (window as any).hideLuxLoader) {
+            (window as any).hideLuxLoader();
+        }
+    }, []);
 
     const navigation = [
         { name: "الرئيسية", href: "/admin", icon: LayoutDashboard },
