@@ -30,7 +30,7 @@ async function runBuild() {
     // 2. Run the main build
     log("Running main application build (vite & esbuild)...");
     try {
-        execSync("npm run build", { stdio: "inherit" });
+        execSync("npm run compile", { stdio: "inherit" });
         log("✅ Main build completed successfully.");
     } catch (e: any) {
         log(`❌ ERROR during main build: ${e.message}`);
