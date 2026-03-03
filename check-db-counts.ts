@@ -1,16 +1,26 @@
-import { db } from "./server/db";
-import { categories, products } from "@shared/schema";
+import { db } from './server/db';
+import { products, categories, subcategories } from '@shared/schema';
+import { sql } from 'drizzle-orm';
 
-async function run() {
+async function check() {
     try {
-        const cats = await db.select().from(categories);
-        const prods = await db.select().from(products);
-        console.log("Categories:\n", JSON.stringify(cats, null, 2));
-        console.log("Products:\n", JSON.stringify(prods, null, 2));
+        const pCount = await db.select({ count: sql<number>`count(*)` }).from(products);
+        const cCount = await db.select({ count: sql<number>`count(*)` }).from(categories);
+        const scCount = await db.select({ count: sql<number>`count(*)` }).from(subcategories);
+
+        console.log(`Products: ${pCount[0]?.count}`);
+        console.log(`Categories: ${cCount[0]?.count}`);
+        console.log(`Subcategories: ${scCount[0]?.count}`);
+
+        if (pCount[0]?.count > 0) {
+            const sample = await db.select().from(products).limit(1);
+            console.log('Sample Product:', sample[0]?.name);
+        }
     } catch (e) {
-        console.error(e);
+        console.error('Database Error:', e);
     } finally {
         process.exit(0);
     }
 }
-run();
+
+check();
