@@ -7,11 +7,11 @@
     "dev:client": "vite dev --port 5002",
     "dev": "cross-env NODE_ENV=development tsx server/index.ts",
     "build": "tsx script/build.ts",
-    "vercel-build": "npm run build",
+    "vercel-build": "npm run db:push && npm run db:seed && npm run build",
     "start": "cross-env NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx scripts/create-admin.ts"
+    "db:seed": "tsx script/create-admin.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

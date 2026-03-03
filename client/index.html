@@ -1,25 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-    <meta property="og:title" content="Lux Box - High-End E-Commerce Experience" />
-    <meta property="og:description" content="A digital twin of luxury shopping. Premium perfumes, accessories, and gifts." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Lux Box - High-End E-Commerce Experience" />
-    <meta name="twitter:description" content="A digital twin of luxury shopping. Premium perfumes, accessories, and gifts." />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    
-    <!-- Google Fonts: Tajawal, Almarai, Montserrat, Playfair Display -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <meta property="og:title" content="Lux Box - High-End E-Commerce Experience" />
+  <meta property="og:description"
+    content="A digital twin of luxury shopping. Premium perfumes, accessories, and gifts." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Lux Box - High-End E-Commerce Experience" />
+  <meta name="twitter:description"
+    content="A digital twin of luxury shopping. Premium perfumes, accessories, and gifts." />
+
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- Google Fonts: Tajawal, Almarai, Montserrat, Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <!-- Global Loading Screen -->
+  <div id="global-loader"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0B281F; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;">
+    <!-- Subtle Marble Overlay -->
+    <div
+      style="position: absolute; inset: 0; background-image: url('/assets/marble-bg.png'); opacity: 0.1; mix-blend-mode: overlay; pointer-events: none;">
+    </div>
+
+    <!-- Logo Container -->
+    <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center;">
+      <!-- Animated Golden Rings -->
+      <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 24px;">
+        <div style="position: absolute; inset: 0; border: 2px solid rgba(212, 175, 55, 0.2); border-radius: 50%;"></div>
+        <div
+          style="position: absolute; inset: 0; border: 2px solid transparent; border-top-color: #D4AF37; border-left-color: #D4AF37; border-radius: 50%; animation: spin 1.5s linear infinite;">
+        </div>
+        <!-- Diamond Center -->
+        <div
+          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(45deg); width: 16px; height: 16px; background-color: #D4AF37; animation: pulse 2s ease-in-out infinite;">
+        </div>
+      </div>
+
+      <!-- Brand Name -->
+      <h1
+        style="font-family: 'Playfair Display', serif; color: #D4AF37; font-size: 28px; letter-spacing: 0.2em; text-align: center; margin: 0; font-weight: 600; text-transform: uppercase;">
+        Lux Box
+      </h1>
+
+      <!-- Loading Text -->
+      <p style="font-family: 'Tajawal', sans-serif; color: rgba(255, 255, 255, 0.6); font-size: 14px; text-align: center; margin-top: 12px; letter-spacing: 0.1em; font-weight: 300;"
+        dir="rtl">
+        جاري تجهيز الفخامة...
+      </p>
+    </div>
+
+    <style>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+
+        0%,
+        100% {
+          transform: translate(-50%, -50%) rotate(45deg) scale(0.8);
+          opacity: 0.6;
+        }
+
+        50% {
+          transform: translate(-50%, -50%) rotate(45deg) scale(1.1);
+          opacity: 1;
+          text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+      }
+    </style>
+  </div>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Script to fade out loader when page is fully loaded -->
+  <script>
+    window.addEventListener('load', function () {
+      const loader = document.getElementById('global-loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+        // Remove from DOM after transition
+        setTimeout(() => {
+          loader.remove();
+        }, 800);
+      }
+    });
+  </script>
+</body>
+
 </html>
