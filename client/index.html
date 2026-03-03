@@ -25,49 +25,29 @@
 </head>
 
 <body>
-  <!-- Global Loading Screen - 10-Panel Pure CSS Cinematic Animation -->
+  <!-- Global Loading Screen - 10-Panel Cohesive Cinematic Animation -->
   <div id="global-loader" class="multi-panel-loader">
 
     <!-- 10 Panels (5 Rows x 2 Columns) -->
     <!-- Row 1 -->
-    <div class="panel panel-left row-1">
-      <div class="panel-inner"></div>
-    </div>
-    <div class="panel panel-right row-1">
-      <div class="panel-inner"></div>
-    </div>
+    <div class="panel panel-left row-1"></div>
+    <div class="panel panel-right row-1"></div>
 
     <!-- Row 2 -->
-    <div class="panel panel-left row-2">
-      <div class="panel-inner"></div>
-    </div>
-    <div class="panel panel-right row-2">
-      <div class="panel-inner"></div>
-    </div>
+    <div class="panel panel-left row-2"></div>
+    <div class="panel panel-right row-2"></div>
 
     <!-- Row 3 (Center) -->
-    <div class="panel panel-left row-3">
-      <div class="panel-inner"></div>
-    </div>
-    <div class="panel panel-right row-3">
-      <div class="panel-inner"></div>
-    </div>
+    <div class="panel panel-left row-3"></div>
+    <div class="panel panel-right row-3"></div>
 
     <!-- Row 4 -->
-    <div class="panel panel-left row-4">
-      <div class="panel-inner"></div>
-    </div>
-    <div class="panel panel-right row-4">
-      <div class="panel-inner"></div>
-    </div>
+    <div class="panel panel-left row-4"></div>
+    <div class="panel panel-right row-4"></div>
 
     <!-- Row 5 -->
-    <div class="panel panel-left row-5">
-      <div class="panel-inner"></div>
-    </div>
-    <div class="panel panel-right row-5">
-      <div class="panel-inner"></div>
-    </div>
+    <div class="panel panel-left row-5"></div>
+    <div class="panel panel-right row-5"></div>
 
     <!-- Center Content: Logo and LUX BOX sign overlay -->
     <div class="panel-loader-content" id="loader-content">
@@ -90,13 +70,13 @@
         inset: 0;
         z-index: 9999;
         overflow: hidden;
-        background-color: #030806;
-        /* Dark void behind the doors */
+        background-color: transparent;
+        /* No black background */
       }
 
       .multi-panel-loader.hidden {
         visibility: hidden;
-        transition: visibility 0s linear 2.5s;
+        transition: visibility 0s linear 3s;
       }
 
       /* Base style for the 10 door panels */
@@ -104,73 +84,62 @@
         position: absolute;
         width: 50vw;
         height: 20vh;
+        /* Using the exact decor image requested so it looks like one huge piece */
         background-color: #0b281f;
-        /* Base luxury green */
-        /* Elegant CSS gradients to simulate premium painted wood/metal */
+        /* Fallback */
         background-image:
-          linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0.5) 100%),
-          linear-gradient(to bottom, #0d3025 0%, #05140f 100%);
-        box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.8);
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+          linear-gradient(rgba(11, 40, 31, 0.6), rgba(7, 26, 20, 0.8)),
+          url('/assets/store-interior.jpg');
+        background-size: 100vw 100vh;
+        background-attachment: fixed;
+        /* This makes the background continuous across all panels */
+        background-position: center;
+        background-repeat: no-repeat;
+        /* Increase duration for a slower, more majestic cinematic feel */
         transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
         z-index: 1;
+
+        /* Subtle inner shadow for a tiny hint of depth on the full frame, but NO lines/borders inside */
       }
 
-      /* Pure CSS Decoration - Gold framing inside each panel */
-      .panel-inner {
-        position: absolute;
-        inset: 12px 24px;
-        border: 1px solid rgba(212, 175, 55, 0.25);
-        box-shadow:
-          inset 0 0 15px rgba(0, 0, 0, 0.6),
-          0 0 5px rgba(0, 0, 0, 0.5);
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%, rgba(0, 0, 0, 0.2) 100%);
-        border-radius: 2px;
-      }
-
-      /* Highlight effect for the pure CSS decoration to add depth */
-      .panel-inner::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        border-left: 1px solid rgba(255, 255, 255, 0.03);
-        pointer-events: none;
-      }
-
-      /* Left and Right column specifics */
+      /* Add full-screen outer shadow, but not between panels */
       .panel-left {
         left: 0;
-        border-right: 2px solid rgba(212, 175, 55, 0.5);
+        box-shadow: inset 10px 0 20px rgba(0, 0, 0, 0.5);
       }
 
       .panel-right {
         right: 0;
-        border-left: 2px solid rgba(212, 175, 55, 0.2);
+        box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.5);
       }
 
-      /* Open gap so the inner frames look continuous horizontally */
-      .panel-left .panel-inner {
-        right: 0;
-        border-right: none;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-
-      .panel-right .panel-inner {
-        left: 0;
-        border-left: none;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-
-      /* Positioning the 5 Rows */
       .row-1 {
         top: 0;
-        border-top: none;
+        box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5);
       }
 
+      .row-5 {
+        top: 80vh;
+        box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .panel-left.row-1 {
+        box-shadow: inset 10px 10px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .panel-right.row-1 {
+        box-shadow: inset -10px 10px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .panel-left.row-5 {
+        box-shadow: inset 10px -10px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .panel-right.row-5 {
+        box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Positioning the middle Rows */
       .row-2 {
         top: 20vh;
       }
@@ -183,27 +152,44 @@
         top: 60vh;
       }
 
-      .row-5 {
-        top: 80vh;
-        border-bottom: none;
-      }
-
       /* --- Animation Sequence --- */
-      /* Middle row opens first */
-      .multi-panel-loader.loaded .row-3 {
-        transition-delay: 0.1s;
+      /* User requested: 1, 2, 2, 2, 2, 1 open sequence.
+         We will open:
+         - Row 3 Left first (1)
+         - Row 3 Right + Row 2 Left (2)
+         - Row 2 Right + Row 4 Left (2)
+         - Row 4 Right + Row 1 Left (2)
+         - Row 1 Right + Row 5 Left (2)
+         - Row 5 Right last (1)
+         This creates a beautiful diagonal sweeping ripple effect.
+      */
+
+      .multi-panel-loader.loaded .panel-left.row-3 {
+        transition-delay: 0.0s;
       }
 
-      /* Rows 2 and 4 open second */
-      .multi-panel-loader.loaded .row-2,
-      .multi-panel-loader.loaded .row-4 {
-        transition-delay: 0.35s;
+      .multi-panel-loader.loaded .panel-right.row-3,
+      .multi-panel-loader.loaded .panel-left.row-2 {
+        transition-delay: 0.2s;
       }
 
-      /* Rows 1 and 5 open last */
-      .multi-panel-loader.loaded .row-1,
-      .multi-panel-loader.loaded .row-5 {
+      .multi-panel-loader.loaded .panel-right.row-2,
+      .multi-panel-loader.loaded .panel-left.row-4 {
+        transition-delay: 0.4s;
+      }
+
+      .multi-panel-loader.loaded .panel-right.row-4,
+      .multi-panel-loader.loaded .panel-left.row-1 {
         transition-delay: 0.6s;
+      }
+
+      .multi-panel-loader.loaded .panel-right.row-1,
+      .multi-panel-loader.loaded .panel-left.row-5 {
+        transition-delay: 0.8s;
+      }
+
+      .multi-panel-loader.loaded .panel-right.row-5 {
+        transition-delay: 1.0s;
       }
 
       /* The Opening Translations */
@@ -229,7 +215,7 @@
         transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
         padding: 0 20px;
-        filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.9));
+        filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.8));
       }
 
       /* Logo and text fade out slightly before the panel animations start */
