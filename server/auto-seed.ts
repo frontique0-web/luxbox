@@ -1,21 +1,82 @@
 import { db } from "./db";
 import { categories, subcategories, products } from "@shared/schema";
 import { sql } from "drizzle-orm";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
 import path from "path";
 
 export async function autoSeed() {
   try {
-    console.log("Checking database schema and migrations...");
+    console.log("Checking database schema...");
     try {
-      const migrationPath = path.join(process.cwd(), "migrations");
-      console.log(`Applying migrations from: ${migrationPath}`);
-      await migrate(db, { migrationsFolder: migrationPath });
-      console.log("✅ Database generic migrations verified/applied.");
-    } catch (migErr: any) {
-      console.warn("⚠️ Migration warning:", migErr.message);
-      // Wait, let's also try to push schema directly if migrate fails and we are in a tight spot?
-      // Drizzle doesn't support runtime push easily without kit.
+      await db.execute(sql.raw(`
+        CREATE TABLE IF NOT EXISTS "admins" (
+          "id" serial PRIMARY KEY NOT NULL,
+          "username" text NOT NULL,
+          "password" text NOT NULL,
+          "created_at" timestamp DEFAULT now() NOT NULL,
+          CONSTRAINT "admins_username_unique" UNIQUE("username")
+        );
+        CREATE TABLE IF NOT EXISTS "categories" (
+          "id" serial PRIMARY KEY NOT NULL,
+          "name_ar" text NOT NULL,
+          "name_en" text NOT NULL,
+          "icon" text,
+          "image_url" text,
+          "slug" text NOT NULL,
+          "display_order" integer DEFAULT 0 NOT NULL,
+          "created_at" timestamp DEFAULT now() NOT NULL,
+          CONSTRAINT "categories_slug_unique" UNIQUE("slug")
+        );
+        CREATE TABLE IF NOT EXISTS "subcategories" (
+          "id" serial PRIMARY KEY NOT NULL,
+          "category_id" integer NOT NULL,
+          "name_ar" text NOT NULL,
+          "name_en" text,
+          "display_order" integer DEFAULT 0 NOT NULL,
+          "created_at" timestamp DEFAULT now() NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS "products" (
+          "id" serial PRIMARY KEY NOT NULL,
+          "name" text NOT NULL,
+          "price" text NOT NULL,
+          "category_id" integer NOT NULL,
+          "subcategory_id" integer,
+          "badge" text NOT NULL,
+          "image_url" text NOT NULL,
+          "image_url2" text,
+          "image_url3" text,
+          "description" text,
+          "is_active" boolean DEFAULT true NOT NULL,
+          "display_order" integer DEFAULT 0 NOT NULL,
+          "code" varchar(5) DEFAULT (floor(random() * 90000 + 10000))::text NOT NULL,
+          "created_at" timestamp DEFAULT now() NOT NULL,
+          "updated_at" timestamp DEFAULT now() NOT NULL,
+          CONSTRAINT "products_code_unique" UNIQUE("code")
+        );
+        CREATE TABLE IF NOT EXISTS "settings" (
+          "id" serial PRIMARY KEY NOT NULL,
+          "exchange_rate" text DEFAULT '15000' NOT NULL,
+          "currency" text DEFAULT 'USD' NOT NULL,
+          "updated_at" timestamp DEFAULT now() NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS "users" (
+          "id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+          "username" text NOT NULL,
+          "password" text NOT NULL,
+          CONSTRAINT "users_username_unique" UNIQUE("username")
+        );
+        DO $$ BEGIN
+          ALTER TABLE "products" ADD CONSTRAINT "products_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;
+        EXCEPTION WHEN duplicate_object THEN null; END $$;
+        DO $$ BEGIN
+          ALTER TABLE "products" ADD CONSTRAINT "products_subcategory_id_subcategories_id_fk" FOREIGN KEY ("subcategory_id") REFERENCES "public"."subcategories"("id") ON DELETE no action ON UPDATE no action;
+        EXCEPTION WHEN duplicate_object THEN null; END $$;
+        DO $$ BEGIN
+          ALTER TABLE "subcategories" ADD CONSTRAINT "subcategories_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
+        EXCEPTION WHEN duplicate_object THEN null; END $$;
+      `));
+      console.log("✅ Database schema verified/applied successfully via raw SQL.");
+    } catch (schemaErr: any) {
+      console.warn("⚠️ Schema verification warning:", schemaErr.message);
     }
 
     const result = await db.select({ count: sql<number>`count(*)` }).from(categories);
