@@ -95,14 +95,6 @@ export default function AdminHeroSliders() {
     };
 
     const handleOpenCreateMode = () => {
-        if (sliders.length >= 5) {
-            toast({
-                variant: "destructive",
-                title: "الحد الأقصى",
-                description: "لا يمكن إضافة أكثر من 5 صور للواجهة.",
-            });
-            return;
-        }
         resetForm();
         setIsSliderModalOpen(true);
     };
@@ -171,10 +163,10 @@ export default function AdminHeroSliders() {
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight text-[#0B281F] font-arabic">إدارة صور الواجهة</h2>
                     <p className="text-muted-foreground font-arabic mt-1">
-                        إضافة وإدارة صور واجهة المتجر (الحد الأقصى 5 صور)
+                        إضافة وإدارة صور واجهة المتجر
                     </p>
                 </div>
-                <Button onClick={handleOpenCreateMode} disabled={sliders.length >= 5} className="bg-[#0B281F] hover:bg-[#143D30] text-[#D4AF37] font-arabic gap-2">
+                <Button onClick={handleOpenCreateMode} className="bg-[#0B281F] hover:bg-[#143D30] text-[#D4AF37] font-arabic gap-2">
                     <Plus className="w-4 h-4" />
                     إضافة صورة جديدة
                 </Button>

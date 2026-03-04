@@ -282,6 +282,7 @@ export async function registerRoutes(
       const slider = await storage.createHeroSlider(req.body);
       res.status(201).json(slider);
     } catch (error) {
+      console.error("Failed to create hero slider:", error);
       res.status(500).json({ error: "Failed to create hero slider" });
     }
   });
