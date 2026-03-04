@@ -231,7 +231,7 @@ function ProductsGrid({
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-12">
       <AnimatePresence mode="popLayout">
         {products.map((product) => (
           <motion.div
@@ -244,27 +244,17 @@ function ProductsGrid({
             className="group relative"
           >
             <Link href={`/product/${product.id}`} className="block h-full group relative">
-              <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 z-10 relative flex flex-col h-full">
+              <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border-[2px] border-[#D4AF37] z-10 relative flex flex-col h-full">
 
-                {product.badge && (
-                  <div className="absolute top-4 right-4 z-20">
-                    <div className="bg-[#D4AF37] px-2 py-1 rounded shadow-sm">
-                      <span className="text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
-                        {product.badge}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="aspect-[4/5] w-full bg-[#fcfcfc] relative overflow-hidden flex items-center justify-center p-4">
+                <div className="aspect-[4/5] w-full bg-[#fcfcfc] relative overflow-hidden flex-shrink-0">
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover relative z-10 group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
 
-                <div className="px-5 pt-6 pb-6 text-center bg-white relative flex-grow flex flex-col justify-between">
+                <div className="px-5 pt-4 pb-4 text-center bg-white relative flex-grow flex flex-col justify-between">
                   <div>
                     <h3 className="font-serif font-bold text-lg md:text-xl text-[#0B281F] mb-1 line-clamp-2">{product.name}</h3>
                     {product.description && (

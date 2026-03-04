@@ -11,12 +11,15 @@ import {
   type InsertAdmin,
   type Setting,
   type InsertSettings,
+  type HeroSlider,
+  type InsertHeroSlider,
   users,
   categories,
   subcategories,
   products,
   admins,
-  settings
+  settings,
+  heroSliders
 } from "../shared/schema.js";
 import { db } from "./db.js";
 import { eq, and, or, ilike, count } from "drizzle-orm";
@@ -68,6 +71,13 @@ export interface IStorage {
     inactiveProducts: number;
     totalCategories: number;
   }>;
+
+  // Hero Sliders
+  getHeroSliders(): Promise<HeroSlider[]>;
+  adminGetHeroSliders(): Promise<HeroSlider[]>;
+  createHeroSlider(slider: InsertHeroSlider): Promise<HeroSlider>;
+  updateHeroSlider(id: number, slider: Partial<InsertHeroSlider>): Promise<HeroSlider>;
+  deleteHeroSlider(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -258,6 +268,36 @@ export class DatabaseStorage implements IStorage {
       inactiveProducts: inactiveProds.value,
       totalCategories: totalCats.value,
     };
+  }
+
+  // Hero Sliders
+  async getHeroSliders(): Promise<HeroSlider[]> {
+    return await db.select().from(heroSliders)
+      .where(eq(heroSliders.isActive, true))
+      .orderBy(heroSliders.displayOrder);
+  }
+
+  async adminGetHeroSliders(): Promise<HeroSlider[]> {
+    return await db.select().from(heroSliders).orderBy(heroSliders.displayOrder);
+  }
+
+  async createHeroSlider(insertSlider: InsertHeroSlider): Promise<HeroSlider> {
+    const [slider] = await db.insert(heroSliders).values(insertSlider).returning();
+    return slider;
+  }
+
+  async updateHeroSlider(id: number, updateData: Partial<InsertHeroSlider>): Promise<HeroSlider> {
+    const [slider] = await db
+      .update(heroSliders)
+      .set(updateData)
+      .where(eq(heroSliders.id, id))
+      .returning();
+    if (!slider) throw new Error("Slider not found");
+    return slider;
+  }
+
+  async deleteHeroSlider(id: number): Promise<void> {
+    await db.delete(heroSliders).where(eq(heroSliders.id, id));
   }
 }
 

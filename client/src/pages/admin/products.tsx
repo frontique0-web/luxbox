@@ -31,7 +31,6 @@ export default function AdminProducts() {
     const [imageUrl, setImageUrl] = useState("");
     const [imageUrl2, setImageUrl2] = useState("");
     const [imageUrl3, setImageUrl3] = useState("");
-    const [badge, setBadge] = useState("");
     const [categoryId, setCategoryId] = useState<string>("");
     const [subcategoryId, setSubcategoryId] = useState<string>("");
 
@@ -144,7 +143,6 @@ export default function AdminProducts() {
         setPrice("");
         setDescription("");
         setImageUrl3("");
-        setBadge("");
         setCategoryId("");
         setSubcategoryId("");
     };
@@ -163,7 +161,6 @@ export default function AdminProducts() {
         setImageUrl(product.imageUrl || "");
         setImageUrl2(product.imageUrl2 || "");
         setImageUrl3(product.imageUrl3 || "");
-        setBadge(product.badge || "");
         setCategoryId(product.categoryId?.toString() || "");
         setSubcategoryId(product.subcategoryId?.toString() || "");
         setIsProductModalOpen(true);
@@ -230,7 +227,6 @@ export default function AdminProducts() {
             imageUrl,
             imageUrl2,
             imageUrl3,
-            badge,
             categoryId: parseInt(categoryId),
             subcategoryId: subcategoryId ? parseInt(subcategoryId) : null,
             displayOrder: editingProduct ? editingProduct.displayOrder : products.length,
@@ -423,10 +419,6 @@ export default function AdminProducts() {
                                 </div>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="badge" className="text-right block font-arabic">بطاقة العرض (شارة اختيارية)</Label>
-                            <Input id="badge" value={badge} onChange={e => setBadge(e.target.value)} placeholder="مثال: NEW, ORIGINAL" className="text-right font-arabic" />
-                        </div>
                     </div>
                     <DialogFooter>
                         <Button
@@ -508,9 +500,6 @@ export default function AdminProducts() {
                                             <TableCell>
                                                 <div className="flex flex-col gap-1">
                                                     <span className="font-arabic font-bold text-[#0B281F]">{product.name}</span>
-                                                    {product.badge && (
-                                                        <Badge variant="outline" className="w-fit text-[10px] px-1.5 py-0 h-4 border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/5">{product.badge}</Badge>
-                                                    )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
@@ -594,11 +583,6 @@ export default function AdminProducts() {
                                     key={product.id}
                                     className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex flex-col gap-4 relative overflow-hidden"
                                 >
-                                    {product.badge && (
-                                        <div className="absolute top-3 left-3">
-                                            <Badge variant="outline" className="text-[10px] px-2 py-0.5 border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/5">{product.badge}</Badge>
-                                        </div>
-                                    )}
                                     <div className="flex gap-4 items-center">
                                         <div className="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
                                             {product.imageUrl ? (

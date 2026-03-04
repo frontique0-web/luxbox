@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAdminAuth } from "@/hooks/use-admin-auth";
-import { LayoutDashboard, Tag, Package, Settings, LogOut, Store, Menu, Bookmark } from "lucide-react";
+import { LayoutDashboard, Tag, Package, Settings, LogOut, Store, Menu, Bookmark, Image as ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -21,6 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: "الرئيسية", href: "/admin", icon: LayoutDashboard },
         { name: "المنتجات", href: "/admin/products", icon: Package },
         { name: "الأقسام", href: "/admin/categories", icon: Tag },
+        { name: "صورة الواجهة", href: "/admin/hero-sliders", icon: ImageIcon },
         { name: "الإعدادات", href: "/admin/settings", icon: Settings },
     ];
 

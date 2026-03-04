@@ -114,3 +114,19 @@ export const insertProductSchema = createInsertSchema(products, {
 });
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
+
+// Hero Sliders Table
+export const heroSliders = pgTable("hero_sliders", {
+  id: serial("id").primaryKey(),
+  imageUrl: text("image_url").notNull(),
+  displayOrder: integer("display_order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertHeroSliderSchema = createInsertSchema(heroSliders).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertHeroSlider = z.infer<typeof insertHeroSliderSchema>;
+export type HeroSlider = typeof heroSliders.$inferSelect;

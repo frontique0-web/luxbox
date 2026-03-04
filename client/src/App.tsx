@@ -16,6 +16,7 @@ import AdminDashboard from "@/pages/admin/dashboard";
 import AdminProducts from "@/pages/admin/products";
 import AdminCategories from "@/pages/admin/categories";
 import AdminSettings from "@/pages/admin/settings";
+import AdminHeroSliders from "@/pages/admin/hero-sliders";
 import AdminLayout from "@/components/admin/layout";
 import { ProtectedAdminRoute } from "@/hooks/use-admin-auth";
 
@@ -53,6 +54,14 @@ function Router() {
         <ProtectedAdminRoute>
           <AdminLayout>
             <AdminSettings />
+          </AdminLayout>
+        </ProtectedAdminRoute>
+      </Route>
+
+      <Route path="/admin/hero-sliders">
+        <ProtectedAdminRoute>
+          <AdminLayout>
+            <AdminHeroSliders />
           </AdminLayout>
         </ProtectedAdminRoute>
       </Route>

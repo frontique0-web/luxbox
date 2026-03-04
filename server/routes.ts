@@ -258,5 +258,51 @@ export async function registerRoutes(
     }
   });
 
+  // Hero Sliders
+  app.get("/api/hero-sliders", async (req, res) => {
+    try {
+      const sliders = await storage.getHeroSliders();
+      res.json(sliders);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch hero sliders" });
+    }
+  });
+
+  app.get("/api/admin/hero-sliders", async (req, res) => {
+    try {
+      const sliders = await storage.adminGetHeroSliders();
+      res.json(sliders);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch admin hero sliders" });
+    }
+  });
+
+  app.post("/api/admin/hero-sliders", async (req, res) => {
+    try {
+      const slider = await storage.createHeroSlider(req.body);
+      res.status(201).json(slider);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create hero slider" });
+    }
+  });
+
+  app.patch("/api/admin/hero-sliders/:id", async (req, res) => {
+    try {
+      const slider = await storage.updateHeroSlider(Number(req.params.id), req.body);
+      res.json(slider);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update hero slider" });
+    }
+  });
+
+  app.delete("/api/admin/hero-sliders/:id", async (req, res) => {
+    try {
+      await storage.deleteHeroSlider(Number(req.params.id));
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete hero slider" });
+    }
+  });
+
   return httpServer;
 }
