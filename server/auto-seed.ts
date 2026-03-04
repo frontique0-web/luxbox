@@ -64,6 +64,13 @@ export async function autoSeed() {
           "password" text NOT NULL,
           CONSTRAINT "users_username_unique" UNIQUE("username")
         );
+        CREATE TABLE IF NOT EXISTS "hero_sliders" (
+          "id" serial PRIMARY KEY NOT NULL,
+          "image_url" text NOT NULL,
+          "display_order" integer DEFAULT 0 NOT NULL,
+          "is_active" boolean DEFAULT true NOT NULL,
+          "created_at" timestamp DEFAULT now() NOT NULL
+        );
         DO $$ BEGIN
           ALTER TABLE "products" ADD CONSTRAINT "products_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;
         EXCEPTION WHEN duplicate_object THEN null; END $$;
