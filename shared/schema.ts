@@ -119,6 +119,9 @@ export type Product = typeof products.$inferSelect;
 export const heroSliders = pgTable("hero_sliders", {
   id: serial("id").primaryKey(),
   imageUrl: text("image_url").notNull(),
+  title: text("title"),
+  subtitle: text("subtitle"),
+  hideText: boolean("hide_text").notNull().default(false),
   displayOrder: integer("display_order").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),

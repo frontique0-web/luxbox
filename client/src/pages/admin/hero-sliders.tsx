@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Trash2, Loader2, Upload, Image as ImageIcon, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, Loader2, Upload, Image as ImageIcon, Eye, EyeOff, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { HeroSlider } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -20,9 +20,13 @@ export default function AdminHeroSliders() {
     // Modal State
     const [isSliderModalOpen, setIsSliderModalOpen] = useState(false);
     const [sliderToDelete, setSliderToDelete] = useState<number | null>(null);
+    const [editingSliderId, setEditingSliderId] = useState<number | null>(null);
 
     // Form state
     const [imageUrl, setImageUrl] = useState("");
+    const [title, setTitle] = useState("");
+    const [subtitle, setSubtitle] = useState("");
+    const [hideText, setHideText] = useState(false);
     const [displayOrder, setDisplayOrder] = useState(0);
 
     const { data: sliders = [], isLoading } = useQuery<HeroSlider[]>({
@@ -47,16 +51,21 @@ export default function AdminHeroSliders() {
 
     const saveMutation = useMutation({
         mutationFn: async (sliderData: any) => {
-            const res = await apiRequest("POST", "/api/admin/hero-sliders", sliderData);
-            return res.json();
+            if (editingSliderId) {
+                const res = await apiRequest("PATCH", `/api/admin/hero-sliders/${editingSliderId}`, sliderData);
+                return res.json();
+            } else {
+                const res = await apiRequest("POST", "/api/admin/hero-sliders", sliderData);
+                return res.json();
+            }
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/admin/hero-sliders"] });
             setIsSliderModalOpen(false);
             resetForm();
             toast({
-                title: "تم الإضافة بنجاح",
-                description: "تمت إضافة صورة الواجهة بنجاح.",
+                title: "تم الحفظ بنجاح",
+                description: editingSliderId ? "تم تعديل صورة الواجهة بنجاح." : "تمت إضافة صورة الواجهة بنجاح.",
             });
         },
         onError: (error: Error) => {
@@ -90,12 +99,26 @@ export default function AdminHeroSliders() {
     };
 
     const resetForm = () => {
+        setEditingSliderId(null);
         setImageUrl("");
+        setTitle("");
+        setSubtitle("");
+        setHideText(false);
         setDisplayOrder(sliders.length);
     };
 
     const handleOpenCreateMode = () => {
         resetForm();
+        setIsSliderModalOpen(true);
+    };
+
+    const handleOpenEditMode = (slider: HeroSlider) => {
+        setEditingSliderId(slider.id);
+        setImageUrl(slider.imageUrl);
+        setTitle(slider.title || "");
+        setSubtitle(slider.subtitle || "");
+        setHideText(slider.hideText);
+        setDisplayOrder(slider.displayOrder);
         setIsSliderModalOpen(true);
     };
 
@@ -148,6 +171,9 @@ export default function AdminHeroSliders() {
 
         saveMutation.mutate({
             imageUrl,
+            title,
+            subtitle,
+            hideText,
             displayOrder: Number(displayOrder),
             isActive: true,
         });
@@ -178,12 +204,30 @@ export default function AdminHeroSliders() {
             }}>
                 <DialogContent className="sm:max-w-[500px]" dir="rtl">
                     <DialogHeader>
-                        <DialogTitle className="font-arabic text-right">إضافة صورة واجهة</DialogTitle>
+                        <DialogTitle className="font-arabic text-right">{editingSliderId ? "تعديل صورة" : "إضافة صورة واجهة"}</DialogTitle>
                         <DialogDescription className="font-arabic text-right text-gray-500">
-                            قم برفع صورة لعرضها في السلايدر الخاص بواجهة المتجر الرئيسية.
+                            {editingSliderId ? "قم بتعديل بيانات الصورة الحالية." : "قم برفع صورة لعرضها في السلايدر الخاص بواجهة المتجر الرئيسية."}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
+                        <div className="space-y-4">
+                            <Label htmlFor="title" className="text-right block font-arabic">العنوان (اختياري)</Label>
+                            <Input id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="مثال: عالم الجمال الفاخر" className="text-right font-arabic" disabled={hideText} />
+                        </div>
+                        <div className="space-y-4">
+                            <Label htmlFor="subtitle" className="text-right block font-arabic">النص الفرعي (اختياري)</Label>
+                            <Input id="subtitle" type="text" value={subtitle} onChange={e => setSubtitle(e.target.value)} placeholder="مثال: تشكيلة حصرية من أفضل العلامات التجارية" className="text-right font-arabic" disabled={hideText} />
+                        </div>
+                        <div className="flex items-center justify-end gap-2 mt-2">
+                            <Label htmlFor="hideText" className="font-arabic">إخفاء النصوص</Label>
+                            <input
+                                id="hideText"
+                                type="checkbox"
+                                checked={hideText}
+                                onChange={(e) => setHideText(e.target.checked)}
+                                className="w-4 h-4 text-[#D4AF37] focus:ring-[#D4AF37] border-gray-300 rounded"
+                            />
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="displayOrder" className="text-right block font-arabic">الترتيب</Label>
                             <Input id="displayOrder" type="number" value={displayOrder} onChange={e => setDisplayOrder(parseInt(e.target.value))} className="text-right font-arabic" />
@@ -228,7 +272,7 @@ export default function AdminHeroSliders() {
                             className="bg-[#D4AF37] hover:bg-[#B4941F] text-[#0B281F] font-arabic w-full gap-2"
                         >
                             {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                            إضافة الصورة
+                            {editingSliderId ? "حفظ التعديلات" : "إضافة الصورة"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -292,6 +336,14 @@ export default function AdminHeroSliders() {
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex justify-center gap-2">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="icon"
+                                                        onClick={() => handleOpenEditMode(slider)}
+                                                        className="h-8 w-8 rounded-lg border-gray-200 text-blue-600 hover:bg-blue-50 hover:border-blue-200"
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="icon"

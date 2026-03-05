@@ -56,49 +56,43 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative w-full rounded-2xl overflow-hidden aspect-[21/9] bg-[#0B281F] shadow-sm flex items-center"
+            className="relative w-full rounded-2xl overflow-hidden h-40 sm:h-48 bg-[#0B281F] shadow-sm flex items-center justify-center"
           >
-            {/* Subtle background texture */}
-            <div className="absolute inset-0 bg-[url('/assets/marble-bg.png')] opacity-[0.05]"></div>
+            <AnimatePresence mode="popLayout">
+              <motion.img
+                key={currentIndex}
+                src={images[currentIndex]}
+                alt="Lux Box Store"
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </AnimatePresence>
 
-            <div className="flex w-full h-full items-center justify-between z-10 p-4 relative">
-              {/* The animating image */}
-              <div className="w-5/12 h-full flex items-center justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="relative w-full h-full max-h-[90%] rounded-xl overflow-hidden shadow-2xl border border-[#D4AF37]/20 bg-gray-100"
-                >
-                  <AnimatePresence mode="popLayout">
-                    <motion.img
-                      key={currentIndex}
-                      src={images[currentIndex]}
-                      alt="Lux Box Store"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.8, ease: "easeInOut" }}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </AnimatePresence>
-                </motion.div>
-              </div>
+            {/* Always show darkened overlay if there is text, or optional */}
+            {!(sliders[currentIndex]?.hideText) && (
+              <div className="absolute inset-0 bg-[#0B281F]/40 z-10"></div>
+            )}
 
-              {/* The Text Content */}
-              <div className="w-7/12 flex flex-col items-end text-right pr-2 justify-center">
-                <h2 className="text-[#D4AF37] font-arabic text-lg sm:text-xl font-bold mb-2 drop-shadow-md">
-                  عالم الجمال الفاخر
+            {/* The Text Content */}
+            {!(sliders[currentIndex]?.hideText) && (
+              <div className="relative z-20 flex flex-col items-center text-center px-4 w-full">
+                <h2 className="text-[#D4AF37] font-arabic text-xl sm:text-2xl font-bold mb-2 drop-shadow-md">
+                  {sliders[currentIndex]?.title || "عالم الجمال الفاخر"}
                 </h2>
-                <p className="text-white/90 font-arabic text-[10px] sm:text-xs mb-3 max-w-[150px] leading-relaxed">
-                  تشكيلة حصرية من أفضل العلامات التجارية
+                <p className="text-white/90 font-arabic text-xs sm:text-sm mb-4 max-w-[250px] leading-relaxed drop-shadow-md">
+                  {sliders[currentIndex]?.subtitle || "تشكيلة حصرية من أفضل العلامات التجارية"}
                 </p>
                 <button
                   onClick={() => document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="bg-[#D4AF37] text-[#0B281F] px-4 py-1.5 rounded-lg font-bold font-arabic transition-colors text-[10px]"
+                  className="bg-[#D4AF37] text-[#0B281F] px-6 py-2 rounded-lg font-bold font-arabic transition-all shadow-lg text-sm hover:scale-105"
                 >
                   تسوقي الآن
                 </button>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>

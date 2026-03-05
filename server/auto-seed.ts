@@ -67,6 +67,9 @@ export async function autoSeed() {
         CREATE TABLE IF NOT EXISTS "hero_sliders" (
           "id" serial PRIMARY KEY NOT NULL,
           "image_url" text NOT NULL,
+          "title" text,
+          "subtitle" text,
+          "hide_text" boolean DEFAULT false NOT NULL,
           "display_order" integer DEFAULT 0 NOT NULL,
           "is_active" boolean DEFAULT true NOT NULL,
           "created_at" timestamp DEFAULT now() NOT NULL
@@ -81,6 +84,19 @@ export async function autoSeed() {
           ALTER TABLE "subcategories" ADD CONSTRAINT "subcategories_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
         EXCEPTION WHEN duplicate_object THEN null; END $$;
       `));
+
+      // Attempt to alter the hero_sliders table if it already exists to add the new columns safely
+      try {
+        await db.execute(sql.raw(`
+          ALTER TABLE "hero_sliders" ADD COLUMN IF NOT EXISTS "title" text;
+          ALTER TABLE "hero_sliders" ADD COLUMN IF NOT EXISTS "subtitle" text;
+          ALTER TABLE "hero_sliders" ADD COLUMN IF NOT EXISTS "hide_text" boolean DEFAULT false NOT NULL;
+        `));
+        console.log("✅ hero_sliders schema updated properly.");
+      } catch (alterErr: any) {
+        console.warn("⚠️ Alter hero_sliders warning:", alterErr.message);
+      }
+
       console.log("✅ Database schema verified/applied successfully via raw SQL.");
     } catch (schemaErr: any) {
       console.warn("⚠️ Schema verification warning:", schemaErr.message);
